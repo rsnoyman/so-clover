@@ -1,4 +1,5 @@
 import React from "react";
+import Cards from "@/components/Cards";
 import styled from "@emotion/styled";
 
 const Board = styled.div<{ angle: number }>`
@@ -10,7 +11,7 @@ const Board = styled.div<{ angle: number }>`
   inset: 0;
   margin: auto;
 
-  background: hsl(87, 100%, 40%);
+  background: var(--clover-color);
   border-radius: 7%;
 
   transform: rotate(${({ angle }) => angle}deg);
@@ -27,15 +28,6 @@ const Petal = styled.div<{ left: number; top: number }>`
   top: calc(${({ top }) => top}*var(--board-size) / 3);
   left: calc(${({ left }) => left}*var(--board-size) / 3);
   transform: translate(-50%, -50%);
-`;
-
-const Card = styled.div`
-  height: calc(var(--board-size) / 2 - 8px);
-  width: calc(var(--board-size) / 2 - 8px);
-  background: white;
-  border-radius: 12%;
-  z-index: 1;
-  margin: 4px;
 `;
 
 const TopInputWrapper = styled.div`
@@ -91,19 +83,16 @@ const Clover = ({ angle }: { angle: number }) => {
       <Petal left={3} top={1} />
       <Petal left={2} top={3} />
       <Petal left={3} top={2} />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
+      <Cards />
       <TopInputWrapper>
-        <Input value={"TOP"} />
-      </TopInputWrapper>
-      <BottomInputWrapper>
         <Input />
-      </BottomInputWrapper>
+      </TopInputWrapper>
       <RightInputWrapper>
         <Input />
       </RightInputWrapper>
+      <BottomInputWrapper>
+        <Input />
+      </BottomInputWrapper>
       <LeftInputWrapper>
         <Input />
       </LeftInputWrapper>
