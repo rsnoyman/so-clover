@@ -12,6 +12,16 @@ const CardWrapper = styled.div`
   margin: 4px;
 `;
 
+const Pistil = styled.div`
+  background: var(--clover-color);
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  inset: 0;
+  margin: auto;
+  border-radius: 12%;
+`;
+
 const Word = styled.div`
   position: absolute;
   width: 100%;
@@ -24,16 +34,6 @@ const Word = styled.div`
   text-transform: uppercase;
 
   user-select: none;
-`;
-
-const Pistil = styled.div`
-  background: var(--clover-color);
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  inset: 0;
-  margin: auto;
-  border-radius: 12%;
 `;
 
 const TopWord = styled(Word)`

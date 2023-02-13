@@ -19,6 +19,11 @@ body {
   height: 100%;
   max-width: 100vw;
   overflow: hidden;
+  background: linear-gradient(
+    to bottom right,
+    hsl(87, 100%, 95%),
+    hsl(87, 100%, 76%)
+  );
 }
 
 #__next {

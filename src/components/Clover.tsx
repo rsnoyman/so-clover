@@ -1,8 +1,7 @@
 import React from "react";
-import Cards from "@/components/Cards";
 import styled from "@emotion/styled";
 
-const Board = styled.div<{ angle: number }>`
+const Base = styled.div<{ angle: number }>`
   position: absolute;
   display: flex;
   flex-wrap: wrap;
@@ -30,51 +29,14 @@ const Petal = styled.div<{ left: number; top: number }>`
   transform: translate(-50%, -50%);
 `;
 
-const TopInputWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  left: calc(var(--board-size) / 2);
-  transform: translate(-50%, -100%);
-`;
+type Props = {
+  angle: number;
+  children?: React.ReactNode;
+};
 
-const BottomInputWrapper = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: calc(var(--board-size) / 2);
-  transform: translate(-50%, 100%) rotate(180deg); ;
-`;
-
-const LeftInputWrapper = styled.div`
-  position: absolute;
-  top: calc(var(--board-size) / 2);
-  left: 0;
-  transform: translate(-60%, -50%) rotate(-90deg);
-`;
-
-const RightInputWrapper = styled.div`
-  position: absolute;
-  top: calc(var(--board-size) / 2);
-  right: 0;
-  transform: translate(60%, -50%) rotate(90deg);
-`;
-
-const Input = styled.input`
-  font-size: 36px;
-  padding: 10px;
-  margin: 10px;
-  background: hsla(0, 0%, 100%, 20%);
-  border: none;
-  border-radius: 5px;
-  text-align: center;
-
-  &:focus {
-    outline: none;
-  }
-`;
-
-const Clover = ({ angle }: { angle: number }) => {
+const Clover = ({ angle, children }: Props) => {
   return (
-    <Board angle={angle}>
+    <Base angle={angle}>
       <Petal left={1} top={0} />
       <Petal left={0} top={1} />
       <Petal left={2} top={0} />
@@ -83,22 +45,8 @@ const Clover = ({ angle }: { angle: number }) => {
       <Petal left={3} top={1} />
       <Petal left={2} top={3} />
       <Petal left={3} top={2} />
-
-      <Cards />
-
-      <TopInputWrapper>
-        <Input />
-      </TopInputWrapper>
-      <RightInputWrapper>
-        <Input />
-      </RightInputWrapper>
-      <BottomInputWrapper>
-        <Input />
-      </BottomInputWrapper>
-      <LeftInputWrapper>
-        <Input />
-      </LeftInputWrapper>
-    </Board>
+      {children}
+    </Base>
   );
 };
 
