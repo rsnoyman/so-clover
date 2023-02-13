@@ -8,23 +8,10 @@ export interface CardData {
 
 interface Props {
   cardData: Array<CardData>;
-  setCardData: React.Dispatch<React.SetStateAction<CardData[] | undefined>>;
+  moveCard: (dragIndex: number, hoverIndex: number) => void;
 }
 
-const Cards = ({ cardData, setCardData }: Props) => {
-  const moveCard = React.useCallback(
-    (dragIndex: number, hoverIndex: number) => {
-      const newCardData = [...cardData];
-
-      const tmp = newCardData[dragIndex];
-      newCardData[dragIndex] = newCardData[hoverIndex];
-      newCardData[hoverIndex] = tmp;
-
-      setCardData(newCardData);
-    },
-    [cardData, setCardData]
-  );
-
+const Cards = ({ cardData, moveCard }: Props) => {
   return (
     <>
       {cardData.map(({ id, words }, index) => (

@@ -9,7 +9,7 @@ export default function handler(
   res: NextApiResponse<Data>
 ) {
   const chosenWords = new Set<string>();
-  while (chosenWords.size < 16) {
+  while (chosenWords.size < 20) {
     const r = Math.floor(Math.random() * words.length);
     chosenWords.add(words[r]);
   }
