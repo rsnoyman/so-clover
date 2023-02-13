@@ -29,10 +29,10 @@ const Petal = styled.div<{ left: number; top: number }>`
   transform: translate(-50%, -50%);
 `;
 
-type Props = {
+interface Props {
   angle: number;
   children?: React.ReactNode;
-};
+}
 
 const Clover = ({ angle, children }: Props) => {
   return (
