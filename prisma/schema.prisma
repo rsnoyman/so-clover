@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Game {
+  id      String   @id @default(uuid())
+  players Player[]
+}
+
+model Player {
+  id     String @id @default(uuid())
+  game   Game   @relation(references: [id], fields: [gameId])
+  gameId String
+  cards  Card[]
+  clues  Clue[]
+}
+
+model Card {
+  id              String   @id @default(uuid())
+  words           String[]
+  dummy           Boolean
+  correctPosition Int
+  player          Player   @relation(references: [id], fields: [playerId])
+  playerId        String
+}
+
+model Clue {
+  position Int    @id
+  clue     String
+  player   Player @relation(references: [id], fields: [playerId])
+  playerId String
+}

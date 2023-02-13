@@ -83,7 +83,9 @@ const Clover = ({ angle }: { angle: number }) => {
       <Petal left={3} top={1} />
       <Petal left={2} top={3} />
       <Petal left={3} top={2} />
+
       <Cards />
+
       <TopInputWrapper>
         <Input />
       </TopInputWrapper>

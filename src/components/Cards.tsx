@@ -1,6 +1,6 @@
 import React from "react";
-import useSWRImmutable from "swr/immutable";
 import styled from "@emotion/styled";
+import useSWRImmutable from "swr/immutable";
 
 const CardWrapper = styled.div`
   position: relative;
