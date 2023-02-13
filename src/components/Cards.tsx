@@ -6,20 +6,20 @@ const CardWrapper = styled.div`
   position: relative;
   height: calc(var(--board-size) / 2 - 8px);
   width: calc(var(--board-size) / 2 - 8px);
-  background: white;
   border-radius: 12%;
   z-index: 1;
   margin: 4px;
+  overflow: hidden;
 `;
 
 const Pistil = styled.div`
-  background: var(--clover-color);
   position: absolute;
   width: 100px;
   height: 100px;
   inset: 0;
   margin: auto;
   border-radius: 12%;
+  box-shadow: 0 0 0 var(--board-size) white;
 `;
 
 const Word = styled.div`
@@ -59,11 +59,11 @@ const LeftWord = styled(Word)`
 
 const Card = ({ words }: { words: Array<string> }) => (
   <CardWrapper>
+    <Pistil />
     <TopWord>{words[0]}</TopWord>
     <RightWord>{words[1]}</RightWord>
     <BottomWord>{words[2]}</BottomWord>
     <LeftWord>{words[3]}</LeftWord>
-    <Pistil />
   </CardWrapper>
 );
 
