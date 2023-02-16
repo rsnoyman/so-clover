@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { useDrag, useDrop } from "react-dnd";
 import type { Identifier } from "dnd-core";
 
-const CardWrapper = styled.div`
+const CardWrapper = styled.div<{ isDragging: boolean }>`
   position: relative;
   height: calc(var(--board-size) / 2 - 8px);
   width: calc(var(--board-size) / 2 - 8px);
@@ -11,6 +11,8 @@ const CardWrapper = styled.div`
   z-index: 1;
   margin: 4px;
   overflow: hidden;
+
+  opacity: ${({ isDragging }) => (isDragging ? 0 : 1)};
 `;
 
 const Pistil = styled.div`
@@ -109,17 +111,20 @@ const Card = ({ id, index, words, moveCard }: Props) => {
     },
   });
 
-  const [, drag] = useDrag({
+  const [{ isDragging }, drag] = useDrag({
     type: ItemTypes.CARD,
     item: () => {
       return { index };
     },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
   });
 
   drag(drop(ref));
 
   return (
-    <CardWrapper ref={ref} data-handler-id={handlerId}>
+    <CardWrapper ref={ref} data-handler-id={handlerId} isDragging={isDragging}>
       <Pistil />
       <TopWord>{words[0]}</TopWord>
       <RightWord>{words[1]}</RightWord>
