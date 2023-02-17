@@ -7,8 +7,15 @@ import { BoardContext } from "@/components/BoardProvider";
 
 const rotation = (angle: number) => css`
   transform: rotate(${-angle}deg);
-  transition: transform 0;
 `;
+
+const mod = (n: number, m: number) => (n % m < 0 ? (n % m) + m : n % m);
+
+const offset = (index: number, angle: number) => {
+  const rotations = mod(angle / 90, 4);
+  console.log({ rotations });
+  return mod(index - rotations, 4);
+};
 
 const CardWrapper = styled.div<{
   isHidden: boolean;
@@ -82,7 +89,6 @@ interface Props {
   index: number;
   words: Array<string>;
   moveCard: (dragIndex: number, hoverIndex: number) => void;
-  spare: boolean;
 }
 
 interface DragItem {
@@ -94,7 +100,7 @@ const ItemTypes = {
   CARD: "card",
 };
 
-const Card = ({ id, index, words, moveCard, spare }: Props) => {
+const Card = ({ id, index, words, moveCard }: Props) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const [{ handlerId, isHovered }, drop] = useDrop<
     DragItem,
@@ -121,12 +127,6 @@ const Card = ({ id, index, words, moveCard, spare }: Props) => {
       }
 
       moveCard(dragIndex, hoverIndex);
-
-      // Note: we're mutating the monitor item here!
-      // Generally it's better to avoid mutations,
-      // but it's good here for the sake of performance
-      // to avoid expensive index searches.
-      item.index = hoverIndex;
     },
   });
 
@@ -143,16 +143,19 @@ const Card = ({ id, index, words, moveCard, spare }: Props) => {
   drag(drop(ref));
 
   const { rotationAngle } = React.useContext(BoardContext);
+  const [angle, setAngle] = React.useState(0);
 
-  const mod = (n: number, m: number) => (n % m < 0 ? (n % m) + m : n % m);
-  const offset = (index: number) => {
-    const rotations = mod(rotationAngle / 90, 4);
-    return mod(index - rotations, 4);
-  };
+  console.log({
+    angle,
+    rotationAngle,
+    sum: rotationAngle + angle,
+    diff: rotationAngle - angle,
+  });
 
-  const rotatedWords = spare
+  const isSpare = index === -1;
+  const rotatedWords = isSpare
     ? words
-    : words.map((x, index) => words[offset(index)]);
+    : words.map((x, index) => words[offset(index, rotationAngle - angle)]);
 
   return (
     <CardWrapper
@@ -160,8 +163,11 @@ const Card = ({ id, index, words, moveCard, spare }: Props) => {
       data-handler-id={handlerId}
       isHidden={isDragging}
       isHighlighted={isHovered}
+      spare={isSpare}
       angle={rotationAngle}
-      spare={spare}
+      onDoubleClick={() => {
+        setAngle((angle) => angle - 90);
+      }}
     >
       <Pistil />
       <TopWord>{rotatedWords[0]}</TopWord>

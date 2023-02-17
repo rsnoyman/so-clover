@@ -37,7 +37,6 @@ export default function GuessStage() {
   );
 
   // TODO set this id in describe phase
-  // Drag and drop does not respect rotation - use horse example
   React.useMemo(() => {
     if (data) {
       setCardData(
@@ -72,7 +71,7 @@ export default function GuessStage() {
         return;
       }
 
-      const tmp = newCardData[dragIndex];
+      const tmp = { ...newCardData[dragIndex] };
       newCardData[dragIndex] = newCardData[hoverIndex];
       newCardData[hoverIndex] = tmp;
       setCardData(newCardData);

@@ -21,7 +21,6 @@ const Cards = ({ cardData, moveCard }: Props) => {
           index={index}
           words={words}
           moveCard={moveCard}
-          spare={false}
         />
       ))}
     </>

@@ -8,7 +8,7 @@ interface Props {
 }
 
 const DraggableSpareCard = ({ cardData: { id, words }, moveCard }: Props) => (
-  <Card id={id} index={-1} words={words} moveCard={moveCard} spare />
+  <Card id={id} index={-1} words={words} moveCard={moveCard} />
 );
 
 export default DraggableSpareCard;
