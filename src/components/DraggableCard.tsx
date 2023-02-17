@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { useDrag, useDrop } from "react-dnd";
 import type { Identifier } from "dnd-core";
 
-const CardWrapper = styled.div<{ isDragging: boolean }>`
+const CardWrapper = styled.div<{ isHidden: boolean; isHighlighted: boolean }>`
   position: relative;
   height: calc(var(--board-size) / 2 - 8px);
   width: calc(var(--board-size) / 2 - 8px);
@@ -12,7 +12,8 @@ const CardWrapper = styled.div<{ isDragging: boolean }>`
   margin: 4px;
   overflow: hidden;
 
-  opacity: ${({ isDragging }) => (isDragging ? 0 : 1)};
+  border: 3px solid ${({ isHighlighted }) => (isHighlighted ? "blue" : null)};
+  opacity: ${({ isHidden }) => (isHidden ? 0 : 1)};
 `;
 
 const Pistil = styled.div`
@@ -23,6 +24,8 @@ const Pistil = styled.div`
   margin: auto;
   border-radius: 12%;
   box-shadow: 0 0 0 var(--board-size) white;
+
+  border: inherit;
 `;
 
 const Word = styled.div`
@@ -78,18 +81,19 @@ const ItemTypes = {
 
 const Card = ({ id, index, words, moveCard }: Props) => {
   const ref = React.useRef<HTMLDivElement>(null);
-  const [{ handlerId }, drop] = useDrop<
+  const [{ handlerId, isHovered }, drop] = useDrop<
     DragItem,
     void,
-    { handlerId: Identifier | null }
+    { handlerId: Identifier | null; isHovered: boolean }
   >({
     accept: ItemTypes.CARD,
     collect(monitor) {
       return {
         handlerId: monitor.getHandlerId(),
+        isHovered: monitor.isOver(),
       };
     },
-    hover(item: DragItem) {
+    drop(item: DragItem) {
       if (!ref.current) {
         return;
       }
@@ -124,7 +128,12 @@ const Card = ({ id, index, words, moveCard }: Props) => {
   drag(drop(ref));
 
   return (
-    <CardWrapper ref={ref} data-handler-id={handlerId} isDragging={isDragging}>
+    <CardWrapper
+      ref={ref}
+      data-handler-id={handlerId}
+      isHidden={isDragging}
+      isHighlighted={isHovered}
+    >
       <Pistil />
       <TopWord>{words[0]}</TopWord>
       <RightWord>{words[1]}</RightWord>
