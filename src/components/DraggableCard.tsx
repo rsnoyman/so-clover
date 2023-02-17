@@ -1,9 +1,21 @@
 import React from "react";
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 import { useDrag, useDrop } from "react-dnd";
 import type { Identifier } from "dnd-core";
+import { BoardContext } from "@/components/BoardProvider";
 
-const CardWrapper = styled.div<{ isHidden: boolean; isHighlighted: boolean }>`
+const rotation = (angle: number) => css`
+  transform: rotate(${-angle}deg);
+  transition: transform 0;
+`;
+
+const CardWrapper = styled.div<{
+  isHidden: boolean;
+  isHighlighted: boolean;
+  angle: number;
+  spare: boolean;
+}>`
   position: relative;
   height: calc(var(--board-size) / 2 - 8px);
   width: calc(var(--board-size) / 2 - 8px);
@@ -14,6 +26,8 @@ const CardWrapper = styled.div<{ isHidden: boolean; isHighlighted: boolean }>`
 
   border: 3px solid ${({ isHighlighted }) => (isHighlighted ? "blue" : null)};
   opacity: ${({ isHidden }) => (isHidden ? 0 : 1)};
+
+  ${({ spare, angle }) => !spare && rotation(angle)}
 `;
 
 const Pistil = styled.div`
@@ -68,6 +82,7 @@ interface Props {
   index: number;
   words: Array<string>;
   moveCard: (dragIndex: number, hoverIndex: number) => void;
+  spare: boolean;
 }
 
 interface DragItem {
@@ -79,7 +94,7 @@ const ItemTypes = {
   CARD: "card",
 };
 
-const Card = ({ id, index, words, moveCard }: Props) => {
+const Card = ({ id, index, words, moveCard, spare }: Props) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const [{ handlerId, isHovered }, drop] = useDrop<
     DragItem,
@@ -127,18 +142,32 @@ const Card = ({ id, index, words, moveCard }: Props) => {
 
   drag(drop(ref));
 
+  const { rotationAngle } = React.useContext(BoardContext);
+
+  const mod = (n: number, m: number) => (n % m < 0 ? (n % m) + m : n % m);
+  const offset = (index: number) => {
+    const rotations = mod(rotationAngle / 90, 4);
+    return mod(index - rotations, 4);
+  };
+
+  const rotatedWords = spare
+    ? words
+    : words.map((x, index) => words[offset(index)]);
+
   return (
     <CardWrapper
       ref={ref}
       data-handler-id={handlerId}
       isHidden={isDragging}
       isHighlighted={isHovered}
+      angle={rotationAngle}
+      spare={spare}
     >
       <Pistil />
-      <TopWord>{words[0]}</TopWord>
-      <RightWord>{words[1]}</RightWord>
-      <BottomWord>{words[2]}</BottomWord>
-      <LeftWord>{words[3]}</LeftWord>
+      <TopWord>{rotatedWords[0]}</TopWord>
+      <RightWord>{rotatedWords[1]}</RightWord>
+      <BottomWord>{rotatedWords[2]}</BottomWord>
+      <LeftWord>{rotatedWords[3]}</LeftWord>
     </CardWrapper>
   );
 };

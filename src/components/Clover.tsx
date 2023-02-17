@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
+import { BoardContext } from "@/components/BoardProvider";
 
 const Base = styled.div<{ angle: number }>`
   position: absolute;
@@ -30,13 +31,14 @@ const Petal = styled.div<{ left: number; top: number }>`
 `;
 
 interface Props {
-  angle: number;
   children?: React.ReactNode;
 }
 
-const Clover = ({ angle, children }: Props) => {
+const Clover = ({ children }: Props) => {
+  const { rotationAngle } = React.useContext(BoardContext);
+
   return (
-    <Base angle={angle}>
+    <Base angle={rotationAngle}>
       <Petal left={1} top={0} />
       <Petal left={0} top={1} />
       <Petal left={2} top={0} />

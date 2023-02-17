@@ -13,6 +13,7 @@ import {
 } from "@/components/Input";
 import Cards, { CardData } from "@/components/DraggableCards";
 import SpareCard from "@/components/DraggableSpareCard";
+import BoardProvider from "@/components/BoardProvider";
 
 async function fetcher(endpoint: string) {
   const response = await fetch(endpoint);
@@ -90,18 +91,20 @@ export default function GuessStage() {
   return (
     cardData &&
     spareCardData && (
-      <DndProvider backend={HTML5Backend}>
-        <Board>
-          <Cards cardData={cardData} moveCard={moveCard} />
-          <TopInput />
-          <RightInput />
-          <BottomInput />
-          <LeftInput />
-        </Board>
-        <SparePile>
-          <SpareCard cardData={spareCardData} moveCard={moveCard} />
-        </SparePile>
-      </DndProvider>
+      <BoardProvider>
+        <DndProvider backend={HTML5Backend}>
+          <Board>
+            <Cards cardData={cardData} moveCard={moveCard} />
+            <TopInput />
+            <RightInput />
+            <BottomInput />
+            <LeftInput />
+          </Board>
+          <SparePile>
+            <SpareCard cardData={spareCardData} moveCard={moveCard} />
+          </SparePile>
+        </DndProvider>
+      </BoardProvider>
     )
   );
 }
