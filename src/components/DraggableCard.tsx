@@ -1,18 +1,20 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { useDrag, useDrop } from "react-dnd";
-import type { Identifier } from "dnd-core";
+import { Draggable } from "react-beautiful-dnd";
 
-const CardWrapper = styled.div<{ isDragging: boolean }>`
+const Drop = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const CardWrapper = styled.div`
   position: relative;
   height: calc(var(--board-size) / 2 - 8px);
   width: calc(var(--board-size) / 2 - 8px);
   border-radius: 12%;
-  z-index: 1;
   margin: 4px;
   overflow: hidden;
-
-  opacity: ${({ isDragging }) => (isDragging ? 0 : 1)};
+  border: 3px solid;
 `;
 
 const Pistil = styled.div`
@@ -23,6 +25,8 @@ const Pistil = styled.div`
   margin: auto;
   border-radius: 12%;
   box-shadow: 0 0 0 var(--board-size) white;
+
+  border: 3px solid;
 `;
 
 const Word = styled.div`
@@ -60,77 +64,28 @@ const LeftWord = styled(Word)`
   transform: translateY(50%) rotate(270deg);
 `;
 
-interface Props {
-  id: number;
-  index: number;
+export interface CardData {
+  id: string;
   words: Array<string>;
-  moveCard: (dragIndex: number, hoverIndex: number) => void;
 }
 
-interface DragItem {
-  index: number;
-  type: string;
-}
-
-const ItemTypes = {
-  CARD: "card",
-};
-
-const Card = ({ id, index, words, moveCard }: Props) => {
-  const ref = React.useRef<HTMLDivElement>(null);
-  const [{ handlerId }, drop] = useDrop<
-    DragItem,
-    void,
-    { handlerId: Identifier | null }
-  >({
-    accept: ItemTypes.CARD,
-    collect(monitor) {
-      return {
-        handlerId: monitor.getHandlerId(),
-      };
-    },
-    hover(item: DragItem) {
-      if (!ref.current) {
-        return;
-      }
-      const dragIndex = item.index;
-      const hoverIndex = index;
-
-      // Don't replace items with themselves
-      if (dragIndex === hoverIndex) {
-        return;
-      }
-
-      moveCard(dragIndex, hoverIndex);
-
-      // Note: we're mutating the monitor item here!
-      // Generally it's better to avoid mutations,
-      // but it's good here for the sake of performance
-      // to avoid expensive index searches.
-      item.index = hoverIndex;
-    },
-  });
-
-  const [{ isDragging }, drag] = useDrag({
-    type: ItemTypes.CARD,
-    item: () => {
-      return { index };
-    },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
-
-  drag(drop(ref));
-
+const Card = ({ id, words }: CardData) => {
   return (
-    <CardWrapper ref={ref} data-handler-id={handlerId} isDragging={isDragging}>
-      <Pistil />
-      <TopWord>{words[0]}</TopWord>
-      <RightWord>{words[1]}</RightWord>
-      <BottomWord>{words[2]}</BottomWord>
-      <LeftWord>{words[3]}</LeftWord>
-    </CardWrapper>
+    <Draggable draggableId={id} index={0}>
+      {(provided) => (
+        <CardWrapper
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+        >
+          <Pistil>{id}</Pistil>
+          <TopWord>{words[0]}</TopWord>
+          <RightWord>{words[1]}</RightWord>
+          <BottomWord>{words[2]}</BottomWord>
+          <LeftWord>{words[3]}</LeftWord>
+        </CardWrapper>
+      )}
+    </Draggable>
   );
 };
 

@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 const Base = styled.div<{ angle: number }>`
   position: absolute;
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   height: var(--board-size);
   width: var(--board-size);

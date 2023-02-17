@@ -1,8 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 import useSWRImmutable from "swr/immutable";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 
 import Board from "@/components/Board";
 import {
@@ -11,8 +10,8 @@ import {
   LeftInput,
   RightInput,
 } from "@/components/Input";
-import Cards, { CardData } from "@/components/DraggableCards";
-import SpareCard from "@/components/DraggableSpareCard";
+import Card, { CardData } from "@/components/DraggableCard";
+import Droppable from "@/components/StrictModeDroppable";
 
 async function fetcher(endpoint: string) {
   const response = await fetch(endpoint);
@@ -21,63 +20,72 @@ async function fetcher(endpoint: string) {
   return json;
 }
 
-const SparePile = styled.div`
+const Zone = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const SpareZone = styled(Zone)`
   position: fixed;
   left: 50px;
   bottom: 50px;
 `;
 
+interface Cards {
+  [key: string]: CardData;
+}
+
 export default function GuessStage() {
-  const [cardData, setCardData] = React.useState<CardData[]>(); // use context?
-  const [spareCardData, setSpareCardData] = React.useState<CardData>();
+  const [cards, setCards] = React.useState<Cards>(); // use context?
   const { data, error, isLoading } = useSWRImmutable<string[]>(
     "/api/words",
     fetcher
+  );
+
+  const onDragEnd = React.useCallback(
+    (result: DropResult) => {
+      if (!cards) {
+        return;
+      }
+
+      const { destination, source } = result;
+
+      if (!destination) {
+        return;
+      }
+
+      if (destination.droppableId === source.droppableId) {
+        return;
+      }
+
+      const prevSourceCardData = { ...cards[source.droppableId] };
+      const prevDestinationCardData = { ...cards[destination.droppableId] };
+
+      const newCards = {
+        ...cards,
+        [source.droppableId]: prevDestinationCardData,
+        [destination.droppableId]: prevSourceCardData,
+      };
+
+      setCards(newCards);
+      return;
+    },
+    [cards]
   );
 
   // TODO set this id in describe phase
   // Drag and drop does not respect rotation - use horse example
   React.useMemo(() => {
     if (data) {
-      setCardData(
-        [0, 1, 2, 3].map((i) => ({
-          id: i,
-          words: data.slice(i * 4, i * 4 + 4),
-        }))
-      );
-      setSpareCardData({ id: -1, words: data.slice(16, 20) });
+      setCards({
+        spare: { id: "a", words: data.slice(0, 4) },
+        first: { id: "b", words: data.slice(4, 8) },
+        second: { id: "c", words: data.slice(8, 12) },
+        third: { id: "d", words: data.slice(12, 16) },
+        fourth: { id: "e", words: data.slice(16, 20) },
+      });
     }
   }, [data]);
-
-  const moveCard = React.useCallback(
-    (dragIndex: number, hoverIndex: number) => {
-      if (!cardData || !spareCardData) return;
-
-      const newCardData = [...cardData];
-
-      if (dragIndex === -1) {
-        const tmp = { ...spareCardData };
-        setSpareCardData(newCardData[hoverIndex]);
-        newCardData[hoverIndex] = tmp;
-        setCardData(newCardData);
-        return;
-      }
-
-      if (hoverIndex === -1) {
-        const tmp = { ...spareCardData };
-        setSpareCardData(newCardData[dragIndex]);
-        newCardData[dragIndex] = tmp;
-        setCardData(newCardData);
-        return;
-      }
-
-      const tmp = newCardData[dragIndex];
-      newCardData[dragIndex] = newCardData[hoverIndex];
-      newCardData[hoverIndex] = tmp;
-      setCardData(newCardData);
-    },
-    [cardData, spareCardData]
-  );
 
   if (isLoading) {
     return <p>Loading…</p>;
@@ -88,20 +96,59 @@ export default function GuessStage() {
   }
 
   return (
-    cardData &&
-    spareCardData && (
-      <DndProvider backend={HTML5Backend}>
+    cards && (
+      <DragDropContext
+        onDragEnd={onDragEnd}
+        // onDragStart={}
+        // onDragUpdate={}
+      >
         <Board>
-          <Cards cardData={cardData} moveCard={moveCard} />
+          <Droppable droppableId="first">
+            {(provided) => (
+              <Zone ref={provided.innerRef} {...provided.droppableProps}>
+                <Card {...cards.first} />
+                {provided.placeholder}
+              </Zone>
+            )}
+          </Droppable>
+          <Droppable droppableId="second">
+            {(provided) => (
+              <Zone ref={provided.innerRef} {...provided.droppableProps}>
+                <Card {...cards.second} />
+                {provided.placeholder}
+              </Zone>
+            )}
+          </Droppable>
+          <Droppable droppableId="third">
+            {(provided) => (
+              <Zone ref={provided.innerRef} {...provided.droppableProps}>
+                <Card {...cards.third} />
+                {provided.placeholder}
+              </Zone>
+            )}
+          </Droppable>
+          <Droppable droppableId="fourth">
+            {(provided) => (
+              <Zone ref={provided.innerRef} {...provided.droppableProps}>
+                <Card {...cards.fourth} />
+                {provided.placeholder}
+              </Zone>
+            )}
+          </Droppable>
           <TopInput />
           <RightInput />
           <BottomInput />
           <LeftInput />
         </Board>
-        <SparePile>
-          <SpareCard cardData={spareCardData} moveCard={moveCard} />
-        </SparePile>
-      </DndProvider>
+        <Droppable droppableId="spare">
+          {(provided) => (
+            <SpareZone ref={provided.innerRef} {...provided.droppableProps}>
+              <Card {...cards.spare} />
+              {provided.placeholder}
+            </SpareZone>
+          )}
+        </Droppable>
+      </DragDropContext>
     )
   );
 }
