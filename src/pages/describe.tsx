@@ -9,6 +9,7 @@ import {
   RightInput,
 } from "@/components/Input";
 import Cards from "@/components/Cards";
+import BoardProvider from "@/components/BoardProvider";
 
 async function fetcher(endpoint: string) {
   const response = await fetch(endpoint);
@@ -29,12 +30,14 @@ export default function DescribePhase() {
   }
 
   return (
-    <Board>
-      <Cards words={data} />
-      <TopInput />
-      <RightInput />
-      <BottomInput />
-      <LeftInput />
-    </Board>
+    <BoardProvider>
+      <Board>
+        <Cards words={data} />
+        <TopInput />
+        <RightInput />
+        <BottomInput />
+        <LeftInput />
+      </Board>
+    </BoardProvider>
   );
 }

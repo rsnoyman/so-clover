@@ -6,14 +6,15 @@ import { RotateCw, RotateCcw } from "react-feather";
 import { BoardContext } from "@/components/BoardProvider";
 
 export default function Board({ children }: { children: React.ReactNode }) {
-  const { rotationAngle, setRotationAngle } = React.useContext(BoardContext);
+  const { handleClockwiseBoardRotate, handleCounterClockwiseBoardRotate } =
+    React.useContext(BoardContext);
 
   return (
     <>
-      <RotateButton left onClick={() => setRotationAngle(rotationAngle + 90)}>
+      <RotateButton left onClick={handleClockwiseBoardRotate}>
         <RotateCw size={100} />
       </RotateButton>
-      <RotateButton onClick={() => setRotationAngle(rotationAngle - 90)}>
+      <RotateButton onClick={handleCounterClockwiseBoardRotate}>
         <RotateCcw size={100} />
       </RotateButton>
       <Clover>{children}</Clover>

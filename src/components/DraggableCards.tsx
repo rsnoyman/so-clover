@@ -8,20 +8,13 @@ export interface CardData {
 
 interface Props {
   cardData: Array<CardData>;
-  moveCard: (dragIndex: number, hoverIndex: number) => void;
 }
 
-const Cards = ({ cardData, moveCard }: Props) => {
+const Cards = ({ cardData }: Props) => {
   return (
     <>
       {cardData.map(({ id, words }, index) => (
-        <Card
-          key={id}
-          id={id}
-          index={index}
-          words={words}
-          moveCard={moveCard}
-        />
+        <Card key={id} id={id} index={index} words={words} />
       ))}
     </>
   );

@@ -9,19 +9,10 @@ const rotation = (angle: number) => css`
   transform: rotate(${-angle}deg);
 `;
 
-const mod = (n: number, m: number) => (n % m < 0 ? (n % m) + m : n % m);
-
-const offset = (index: number, angle: number) => {
-  const rotations = mod(angle / 90, 4);
-  console.log({ rotations });
-  return mod(index - rotations, 4);
-};
-
 const CardWrapper = styled.div<{
   isHidden: boolean;
   isHighlighted: boolean;
-  angle: number;
-  spare: boolean;
+  rotationAngle: number;
 }>`
   position: relative;
   height: calc(var(--board-size) / 2 - 8px);
@@ -34,7 +25,7 @@ const CardWrapper = styled.div<{
   border: 3px solid ${({ isHighlighted }) => (isHighlighted ? "blue" : null)};
   opacity: ${({ isHidden }) => (isHidden ? 0 : 1)};
 
-  ${({ spare, angle }) => !spare && rotation(angle)}
+  ${({ rotationAngle }) => rotation(rotationAngle)}
 `;
 
 const Pistil = styled.div`
@@ -88,7 +79,6 @@ interface Props {
   id: number;
   index: number;
   words: Array<string>;
-  moveCard: (dragIndex: number, hoverIndex: number) => void;
 }
 
 interface DragItem {
@@ -100,8 +90,11 @@ const ItemTypes = {
   CARD: "card",
 };
 
-const Card = ({ id, index, words, moveCard }: Props) => {
+const Card = ({ id, index, words }: Props) => {
   const ref = React.useRef<HTMLDivElement>(null);
+  const { rotationAngle, cardData, setCardData, moveCard } =
+    React.useContext(BoardContext);
+
   const [{ handlerId, isHovered }, drop] = useDrop<
     DragItem,
     void,
@@ -142,20 +135,19 @@ const Card = ({ id, index, words, moveCard }: Props) => {
 
   drag(drop(ref));
 
-  const { rotationAngle } = React.useContext(BoardContext);
-  const [angle, setAngle] = React.useState(0);
+  const handleDoubleClick = () => {
+    if (!cardData) return;
 
-  console.log({
-    angle,
-    rotationAngle,
-    sum: rotationAngle + angle,
-    diff: rotationAngle - angle,
-  });
+    const newCardData = [...cardData];
+    const card = newCardData[index];
+    card.words = card.words.map(
+      (x, wordIndex) => card.words[(wordIndex + 3) % 4]
+    );
 
-  const isSpare = index === -1;
-  const rotatedWords = isSpare
-    ? words
-    : words.map((x, index) => words[offset(index, rotationAngle - angle)]);
+    setCardData(newCardData);
+  };
+
+  const isSpare = index === 4;
 
   return (
     <CardWrapper
@@ -163,17 +155,14 @@ const Card = ({ id, index, words, moveCard }: Props) => {
       data-handler-id={handlerId}
       isHidden={isDragging}
       isHighlighted={isHovered}
-      spare={isSpare}
-      angle={rotationAngle}
-      onDoubleClick={() => {
-        setAngle((angle) => angle - 90);
-      }}
+      rotationAngle={isSpare ? 0 : rotationAngle}
+      onDoubleClick={handleDoubleClick}
     >
       <Pistil />
-      <TopWord>{rotatedWords[0]}</TopWord>
-      <RightWord>{rotatedWords[1]}</RightWord>
-      <BottomWord>{rotatedWords[2]}</BottomWord>
-      <LeftWord>{rotatedWords[3]}</LeftWord>
+      <TopWord>{words[0]}</TopWord>
+      <RightWord>{words[1]}</RightWord>
+      <BottomWord>{words[2]}</BottomWord>
+      <LeftWord>{words[3]}</LeftWord>
     </CardWrapper>
   );
 };
