@@ -7,6 +7,7 @@ export const Input = styled.input`
   border: none;
   border-radius: 5px;
   text-align: center;
+  text-transform: uppercase;
 
   &:focus {
     outline: none;

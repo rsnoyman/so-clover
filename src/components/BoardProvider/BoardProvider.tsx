@@ -23,17 +23,18 @@ const rotateCardData = (cardData: CardData[] | undefined, shift: number) => {
   if (!cardData) return;
   return cardData.map((card, cardIndex) => {
     if (cardIndex === 4) return card;
-    return {
-      id: card.id,
-      words: card.words.map(
-        (x, wordIndex) => card.words[(wordIndex + shift) % 4]
-      ),
-    };
+
+    card.words = card.words.map(
+      (x, wordIndex) => card.words[(wordIndex + shift) % 4]
+    );
+
+    return card;
   });
 };
 
 const BoardProvider = ({ children }: Props) => {
   const [cardData, setCardData] = React.useState<CardData[]>();
+
   const moveCard = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {
       if (!cardData) return;

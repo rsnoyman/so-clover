@@ -19,7 +19,10 @@ async function fetcher(endpoint: string) {
 }
 
 export default function DescribePhase() {
-  const { data, error, isLoading } = useSWRImmutable("/api/words", fetcher);
+  const { data, error, isLoading } = useSWRImmutable(
+    "/api/generate-words",
+    fetcher
+  );
 
   if (isLoading) {
     return <p>Loading…</p>;
