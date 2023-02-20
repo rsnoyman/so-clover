@@ -34,7 +34,7 @@ export default function GuessPage() {
     data,
     error: cardDataError,
     isLoading: cardDataIsLoading,
-  } = useSWRImmutable<string[]>(`/api/load-words/${}`, fetcher);
+  } = useSWRImmutable<string[]>(`/api/load-words/${0}`, fetcher);
   React.useEffect(() => {
     if (data) {
       setCardData(
