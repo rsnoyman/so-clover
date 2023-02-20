@@ -11,7 +11,7 @@ export default async function handler(
   const { player } = req.query;
   const cards = await prisma.card.findMany({
     where: {
-      playerId: player as string,
+      playerId: Number(player),
     },
   });
 

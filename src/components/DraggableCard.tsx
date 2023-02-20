@@ -93,7 +93,9 @@ const Card = ({ id, index, words }: Props) => {
       rotationAngle={isSpare ? 0 : rotationAngle}
       onDoubleClick={handleDoubleClick}
     >
-      <Pistil />
+      <Pistil>
+        id:{id}/{index}/{words[0]}
+      </Pistil>
       <TopWord>{words[0]}</TopWord>
       <RightWord>{words[1]}</RightWord>
       <BottomWord>{words[2]}</BottomWord>

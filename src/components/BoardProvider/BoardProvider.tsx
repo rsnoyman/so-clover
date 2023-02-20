@@ -22,13 +22,14 @@ type Props = { children?: React.ReactNode };
 const rotateCardData = (cardData: CardData[] | undefined, shift: number) => {
   if (!cardData) return;
   return cardData.map((card, cardIndex) => {
-    if (cardIndex === 4) return card;
+    if (cardIndex === 4) return { ...card };
 
-    card.words = card.words.map(
-      (x, wordIndex) => card.words[(wordIndex + shift) % 4]
-    );
-
-    return card;
+    return {
+      ...card,
+      words: card.words.map(
+        (x, wordIndex) => card.words[(wordIndex + shift) % 4]
+      ),
+    };
   });
 };
 

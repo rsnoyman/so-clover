@@ -11,30 +11,32 @@ datasource db {
 }
 
 model Game {
-  id      String   @id @default(uuid())
-  players Player[]
+  id         Int      @id @default(autoincrement())
+  cluesGiven Int      @default(0)
+  players    Player[]
 }
 
 model Player {
-  id     String @id @default(uuid())
+  id     Int    @id @default(autoincrement())
   game   Game   @relation(references: [id], fields: [gameId])
-  gameId String
+  gameId Int
   cards  Card[]
   clues  Clue[]
 }
 
 model Card {
-  id              String   @id @default(uuid())
+  id              Int      @id @default(autoincrement())
   words           String[]
   dummy           Boolean
   correctPosition Int
   player          Player   @relation(references: [id], fields: [playerId])
-  playerId        String
+  playerId        Int
 }
 
 model Clue {
-  position Int    @id
+  id       Int    @id @default(autoincrement())
+  position Int
   clue     String
   player   Player @relation(references: [id], fields: [playerId])
-  playerId String
+  playerId Int
 }

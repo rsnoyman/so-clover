@@ -8,7 +8,7 @@ const Layout = styled.div`
   display: flex;
   gap: 8px;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
   height: var(--board-size);
   width: var(--board-size);
   inset: 0;
