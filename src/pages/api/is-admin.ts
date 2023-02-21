@@ -6,12 +6,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { gameId } = req.query;
-  const { name, admin } = req.body;
+  const { playerId } = req.query;
 
-  const player = await prisma.player.create({
-    data: { gameId: gameId as string, name, admin },
+  const player = await prisma.player.findUnique({
+    where: {
+      id: playerId as string,
+    },
   });
 
-  res.status(200).json(player);
+  res.status(200).json(player?.admin);
 }
