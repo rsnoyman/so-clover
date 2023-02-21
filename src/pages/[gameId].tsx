@@ -1,9 +1,20 @@
-import React from "react";
-import dynamic from "next/dynamic";
-const JoinGame = dynamic(() => import("../components/JoinGame"), {
-  ssr: false,
-});
+import { GetServerSideProps } from 'next';
+import React from 'react';
 
-export default function JoinGamePage() {
-  return <JoinGame />;
+import Lobby from '@/components/Lobby';
+import NewPlayerForm from '@/components/NewPlayerForm';
+
+interface Props {
+  playerId: string | null;
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const playerId = context.req.cookies?.playerId ?? null;
+  return {
+    props: { playerId },
+  };
+};
+
+export default function JoinGamePage({ playerId }: Props) {
+  return playerId ? <Lobby /> : <NewPlayerForm />;
 }

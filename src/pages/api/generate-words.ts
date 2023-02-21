@@ -1,12 +1,13 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from "next";
-import words from "@/data/word-list";
+import type { NextApiRequest, NextApiResponse } from 'next';
+
+import words from '@/data/word-list';
 
 type Data = Array<string>;
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<Data>,
 ) {
   const chosenWords = new Set<string>();
   while (chosenWords.size < 20) {

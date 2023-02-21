@@ -1,9 +1,12 @@
-import React from "react";
-import styled from "@emotion/styled";
-import { useRouter } from "next/router";
-import Button from "@/styles/Button";
-import { NameInput } from "@/components/Input";
-import { useCookies } from "react-cookie";
+import { useRouter } from 'next/router';
+import React from 'react';
+import { useCookies } from 'react-cookie';
+
+import styled from '@emotion/styled';
+
+import { NameInput } from '@/components/Input';
+
+import Button from '@/styles/Button';
 
 const Form = styled.form`
   position: absolute;
@@ -30,9 +33,9 @@ const Label = styled.label`
 
 const createPlayer = async (gameId: string, name: string, admin: boolean) => {
   const response = await fetch(`/api/create-player?gameId=${gameId}`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({ name, admin }),
   });
@@ -43,9 +46,9 @@ const createPlayer = async (gameId: string, name: string, admin: boolean) => {
 };
 
 export default function NewPlayerForm() {
-  const [name, setName] = React.useState("");
+  const [name, setName] = React.useState('');
   const [error, setError] = React.useState(false);
-  const [, setCookie] = useCookies(["playerId"]);
+  const [, setCookie] = useCookies(['playerId']);
 
   const router = useRouter();
 
@@ -59,14 +62,14 @@ export default function NewPlayerForm() {
     const admin = !gameId;
 
     if (!gameId) {
-      const response = await fetch("/api/create-game");
+      const response = await fetch('/api/create-game');
       gameId = await response.json();
     }
 
     gameId = gameId as string;
     const id = await createPlayer(gameId, name, admin);
-    setCookie("playerId", id, {
-      path: "/",
+    setCookie('playerId', id, {
+      path: '/',
       maxAge: 7200 /* Expires after 2hr */,
     });
     router.push(gameId);

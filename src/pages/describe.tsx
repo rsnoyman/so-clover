@@ -1,19 +1,21 @@
-import React from "react";
-import useSWRImmutable from "swr/immutable";
+import React from 'react';
+import useSWRImmutable from 'swr/immutable';
 
-import Board from "@/components/Board";
+import styled from '@emotion/styled';
+
+import Board from '@/components/Board';
+import BoardProvider from '@/components/BoardProvider';
+import Cards from '@/components/Cards';
 import {
-  TopInput,
   BottomInput,
   LeftInput,
   RightInput,
-} from "@/components/Input";
-import Cards from "@/components/Cards";
-import BoardProvider from "@/components/BoardProvider";
-import Button from "@/styles/Button";
-import styled from "@emotion/styled";
+  TopInput,
+} from '@/components/Input';
 
-import fetcher from "@/utils/fetcher";
+import fetcher from '@/utils/fetcher';
+
+import Button from '@/styles/Button';
 
 const ButtonWrapper = styled.div`
   position: fixed;
@@ -22,14 +24,14 @@ const ButtonWrapper = styled.div`
 `;
 
 export default function DescribePhase() {
-  const [topClue, setTopClue] = React.useState("t");
-  const [rightClue, setRightClue] = React.useState("r");
-  const [bottomClue, setBottomClue] = React.useState("b");
-  const [leftClue, setLeftClue] = React.useState("l");
+  const [topClue, setTopClue] = React.useState('t');
+  const [rightClue, setRightClue] = React.useState('r');
+  const [bottomClue, setBottomClue] = React.useState('b');
+  const [leftClue, setLeftClue] = React.useState('l');
 
   const { data, error, isLoading } = useSWRImmutable(
-    "/api/generate-words",
-    fetcher
+    '/api/generate-words',
+    fetcher,
   );
 
   if (isLoading) {
@@ -45,10 +47,10 @@ export default function DescribePhase() {
 
     if (clues.some((clue) => !clue)) return; // focus the empty one (?)
 
-    fetch("/api/submit-clues?gameId=0", {
-      method: "POST",
+    fetch('/api/submit-clues?gameId=0', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ clues, playerId: 1 }),
     });

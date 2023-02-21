@@ -1,9 +1,10 @@
-import React from "react";
+import React from 'react';
+import { RotateCcw, RotateCw } from 'react-feather';
 
-import Clover from "@/components/Clover";
-import RotateButton from "@/styles/RotateButton";
-import { RotateCw, RotateCcw } from "react-feather";
-import { BoardContext } from "@/components/BoardProvider";
+import { BoardContext } from '@/components/BoardProvider';
+import Clover from '@/components/Clover';
+
+import RotateButton from '@/styles/RotateButton';
 
 export default function Board({ children }: { children: React.ReactNode }) {
   const { handleClockwiseBoardRotate, handleCounterClockwiseBoardRotate } =

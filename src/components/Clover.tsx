@@ -1,6 +1,8 @@
-import React from "react";
-import styled from "@emotion/styled";
-import { BoardContext } from "@/components/BoardProvider";
+import React from 'react';
+
+import styled from '@emotion/styled';
+
+import { BoardContext } from '@/components/BoardProvider';
 
 const Base = styled.div<{ angle: number }>`
   position: absolute;

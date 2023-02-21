@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 type BoardContextType = {
   rotationAngle: number;
@@ -10,7 +10,7 @@ type BoardContextType = {
 };
 
 export const BoardContext = React.createContext<BoardContextType>(
-  {} as BoardContextType
+  {} as BoardContextType,
 );
 export interface CardData {
   id: number;
@@ -27,7 +27,7 @@ const rotateCardData = (cardData: CardData[] | undefined, shift: number) => {
     return {
       ...card,
       words: card.words.map(
-        (x, wordIndex) => card.words[(wordIndex + shift) % 4]
+        (x, wordIndex) => card.words[(wordIndex + shift) % 4],
       ),
     };
   });
@@ -48,7 +48,7 @@ const BoardProvider = ({ children }: Props) => {
 
       setCardData(newCardData);
     },
-    [cardData]
+    [cardData],
   );
 
   const [rotationAngle, setRotationAngle] = React.useState(0);

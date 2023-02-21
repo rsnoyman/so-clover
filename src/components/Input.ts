@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled';
 
 export const Input = styled.input`
   font-size: 36px;
@@ -29,7 +29,7 @@ export const BottomInput = styled(Input)`
   position: absolute;
   bottom: 0;
   left: calc(var(--board-size) / 2);
-  transform: translate(-50%, 110%) rotate(180deg); ;
+  transform: translate(-50%, 110%) rotate(180deg);
 `;
 
 export const LeftInput = styled(Input)`

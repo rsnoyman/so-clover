@@ -1,11 +1,14 @@
-import React from "react";
-import styled from "@emotion/styled";
-import useSWR from "swr";
-import { Player } from "@prisma/client";
-import Button from "@/styles/Button";
-import fetcher from "@/utils/fetcher";
-import { useRouter } from "next/router";
-import { useCookies } from "react-cookie";
+import { useRouter } from 'next/router';
+import React from 'react';
+import { useCookies } from 'react-cookie';
+import useSWR from 'swr';
+
+import styled from '@emotion/styled';
+import { Player } from '@prisma/client';
+
+import fetcher from '@/utils/fetcher';
+
+import Button from '@/styles/Button';
 
 const Layout = styled.form`
   position: absolute;
@@ -32,27 +35,27 @@ const PlayersWrapper = styled.div`
   align-items: center;
 `;
 
-const Player = styled.div`
+const PlayerWrapper = styled.div`
   text-transform: uppercase;
 `;
 
 export default function Lobby() {
   const router = useRouter();
   const { gameId } = router.query;
-  const [cookies] = useCookies(["playerId"]);
+  const [cookies] = useCookies(['playerId']);
 
   const { data: players } = useSWR<Player[]>(
     `/api/get-players?gameId=${gameId}`,
-    fetcher
+    fetcher,
   );
 
   const { data: isAdmin } = useSWR<Player[]>(
     `/api/is-admin?playerId=${cookies.playerId}`,
-    fetcher
+    fetcher,
   );
 
   const [isCopied, setIsCopied] = React.useState(false);
-  const [buttonText, setButtonText] = React.useState("Invite");
+  const [buttonText, setButtonText] = React.useState('Invite');
 
   const copyPageUrl = async (event: any) => {
     event.preventDefault();
@@ -70,19 +73,21 @@ export default function Lobby() {
       <PlayersWrapper>
         <h1>Players</h1>
         {players &&
-          players.map(({ id, name }) => <Player key={id}>{name}</Player>)}
+          players.map(({ id, name }) => (
+            <PlayerWrapper key={id}>{name}</PlayerWrapper>
+          ))}
       </PlayersWrapper>
       <div>
         <StyledButtton
           onClick={copyPageUrl}
           onMouseOver={() => {
-            setButtonText("Copy");
+            setButtonText('Copy');
           }}
           onMouseUp={() => {
-            setButtonText(isCopied ? "Copied" : "Copy");
+            setButtonText(isCopied ? 'Copied' : 'Copy');
           }}
           onMouseLeave={() => {
-            setButtonText("Invite");
+            setButtonText('Invite');
           }}
         >
           {buttonText}

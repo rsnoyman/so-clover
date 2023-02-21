@@ -1,15 +1,18 @@
-import React from "react";
-import { useDrag, useDrop } from "react-dnd";
-import type { Identifier } from "dnd-core";
-import { BoardContext } from "@/components/BoardProvider";
+import type { Identifier } from 'dnd-core';
+import React from 'react';
+import { useDrag, useDrop } from 'react-dnd';
+
+import { BoardContext } from '@/components/BoardProvider';
+
 import {
-  DraggableCardWrapper,
-  Pistil,
-  TopWord,
-  RightWord,
   BottomWord,
+  DraggableCardWrapper,
   LeftWord,
-} from "@/styles/Card";
+  Pistil,
+  RightWord,
+  TopWord,
+} from '@/styles/Card';
+
 interface Props {
   id: number;
   index: number;
@@ -22,7 +25,7 @@ interface DragItem {
 }
 
 const ItemTypes = {
-  CARD: "card",
+  CARD: 'card',
 };
 
 const Card = ({ id, index, words }: Props) => {
@@ -76,7 +79,7 @@ const Card = ({ id, index, words }: Props) => {
     const newCardData = [...cardData];
     const card = newCardData[index];
     card.words = card.words.map(
-      (x, wordIndex) => card.words[(wordIndex + 3) % 4]
+      (x, wordIndex) => card.words[(wordIndex + 3) % 4],
     );
 
     setCardData(newCardData);

@@ -1,6 +1,7 @@
-import React from "react";
-import Card from "@/components/DraggableCard";
-import { CardData } from "@/components/DraggableCards";
+import React from 'react';
+
+import Card from '@/components/DraggableCard';
+import { CardData } from '@/components/DraggableCards';
 
 interface Props {
   cardData: CardData;

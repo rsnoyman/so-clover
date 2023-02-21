@@ -1,13 +1,13 @@
-import React from "react";
+import React from 'react';
 
 import {
-  CardWrapper,
-  Pistil,
-  TopWord,
-  RightWord,
   BottomWord,
+  CardWrapper,
   LeftWord,
-} from "@/styles/Card";
+  Pistil,
+  RightWord,
+  TopWord,
+} from '@/styles/Card';
 
 interface Props {
   words: Array<string>;

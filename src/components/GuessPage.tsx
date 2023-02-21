@@ -1,20 +1,22 @@
-import React from "react";
-import styled from "@emotion/styled";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import useSWRImmutable from "swr/immutable";
+import React from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import useSWRImmutable from 'swr/immutable';
 
-import Board from "@/components/Board";
+import styled from '@emotion/styled';
+
+import Board from '@/components/Board';
+import { BoardContext } from '@/components/BoardProvider';
+import Cards from '@/components/DraggableCards';
+import SpareCard from '@/components/DraggableSpareCard';
 import {
-  TopInput,
   BottomInput,
   LeftInput,
   RightInput,
-} from "@/components/Input";
-import Cards from "@/components/DraggableCards";
-import SpareCard from "@/components/DraggableSpareCard";
-import { BoardContext } from "@/components/BoardProvider";
-import fetcher from "@/utils/fetcher";
+  TopInput,
+} from '@/components/Input';
+
+import fetcher from '@/utils/fetcher';
 
 const SparePile = styled.div`
   position: fixed;
@@ -37,7 +39,7 @@ export default function GuessPage() {
         [0, 1, 2, 3, 4].map((i) => ({
           id: i,
           words: data.slice(i * 4, i * 4 + 4),
-        }))
+        })),
       );
     }
   }, [data, setCardData]);

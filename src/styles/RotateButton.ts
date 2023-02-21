@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled';
 
 const RotateButton = styled.button<{ left?: boolean }>`
   position: fixed;

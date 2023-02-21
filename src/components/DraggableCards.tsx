@@ -1,5 +1,6 @@
-import React from "react";
-import Card from "@/components/DraggableCard";
+import React from 'react';
+
+import Card from '@/components/DraggableCard';
 
 export interface CardData {
   id: number;

@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
+import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 
 const rotation = (angle: number) => css`
   transform: rotate(${-angle}deg);
@@ -23,9 +23,9 @@ type DraggableCardWrapperProps = {
 };
 
 export const DraggableCardWrapper = styled(
-  CardWrapper
+  CardWrapper,
 )<DraggableCardWrapperProps>`
-  border: 3px solid ${({ isHighlighted }) => (isHighlighted ? "white" : null)};
+  border: 3px solid ${({ isHighlighted }) => (isHighlighted ? 'white' : null)};
   opacity: ${({ isHidden }) => (isHidden ? 0 : 1)};
 
   ${({ rotationAngle }) => rotation(rotationAngle)}

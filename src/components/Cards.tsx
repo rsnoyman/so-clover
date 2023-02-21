@@ -1,5 +1,6 @@
-import React from "react";
-import Card from "@/components/Card";
+import React from 'react';
+
+import Card from '@/components/Card';
 
 interface Props {
   words: Array<string>;
