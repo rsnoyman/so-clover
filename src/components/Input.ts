@@ -14,6 +14,10 @@ export const Input = styled.input`
   }
 `;
 
+export const NameInput = styled(Input)`
+  border: 3px solid;
+`;
+
 export const TopInput = styled(Input)`
   position: absolute;
   top: 0;

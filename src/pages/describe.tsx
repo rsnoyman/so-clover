@@ -13,18 +13,13 @@ import BoardProvider from "@/components/BoardProvider";
 import Button from "@/styles/Button";
 import styled from "@emotion/styled";
 
+import fetcher from "@/utils/fetcher";
+
 const ButtonWrapper = styled.div`
   position: fixed;
   right: 50px;
   bottom: 50px;
 `;
-
-async function fetcher(endpoint: string) {
-  const response = await fetch(endpoint);
-  const json = await response.json();
-
-  return json;
-}
 
 export default function DescribePhase() {
   const [topClue, setTopClue] = React.useState("t");

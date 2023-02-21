@@ -14,18 +14,13 @@ import {
 import Cards from "@/components/DraggableCards";
 import SpareCard from "@/components/DraggableSpareCard";
 import { BoardContext } from "@/components/BoardProvider";
+import fetcher from "@/utils/fetcher";
 
 const SparePile = styled.div`
   position: fixed;
   left: 50px;
   bottom: 50px;
 `;
-async function fetcher(endpoint: string) {
-  const response = await fetch(endpoint);
-  const json = await response.json();
-
-  return json;
-}
 
 export default function GuessPage() {
   const { cardData, setCardData } = React.useContext(BoardContext);
@@ -34,7 +29,8 @@ export default function GuessPage() {
     data,
     error: cardDataError,
     isLoading: cardDataIsLoading,
-  } = useSWRImmutable<string[]>(`/api/load-words/${0}`, fetcher);
+  } = useSWRImmutable<string[]>(`/api/generate-words`, fetcher);
+
   React.useEffect(() => {
     if (data) {
       setCardData(

@@ -28,14 +28,13 @@ export default async function handler(
     },
   });
 
-  const numPlayers = await prisma.game.findMany({
-    include: {
-      _count: {
-        select: { players: true },
-      },
-    },
-  });
-  console.log(numPlayers);
+  // const numPlayers = await prisma.game.findMany({
+  //   include: {
+  //     _count: {
+  //       select: { players: true },
+  //     },
+  //   },
+  // });
 
   res.status(200);
 }
