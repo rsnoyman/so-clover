@@ -20,11 +20,10 @@ const Layout = styled.form`
   width: var(--board-size);
   inset: 0;
   margin: auto;
-  border: 3px solid;
 `;
 
 const StyledButtton = styled(Button)`
-  width: 200px;
+  width: 300px;
 `;
 
 const PlayersWrapper = styled.div`
@@ -40,13 +39,14 @@ const PlayerWrapper = styled.div`
 
 interface Props {
   initialPlayers: Player[];
+  isAdmin: boolean;
 }
 
-export default function Lobby({ initialPlayers }: Props) {
+export default function Lobby({ initialPlayers, isAdmin }: Props) {
   const router = useRouter();
   const gameId = router.query.gameId as string;
   const [players, setPlayers] = React.useState(initialPlayers);
-  const [isAdmin, setIsAdmin] = React.useState(initialPlayers.length === 0);
+  const [isGameReady, setIsGameReady] = React.useState(false);
 
   const { data: playersData } = useSWR<Player[]>(
     `/api/get-players?gameId=${gameId}`,
@@ -60,13 +60,17 @@ export default function Lobby({ initialPlayers }: Props) {
     }
   }, [playersData]);
 
-  const { data: isAdminData } = useSWR<boolean>(`/api/is-admin`, fetcher);
+  const { data: gameReady } = useSWR<boolean>(
+    `/api/describe-started?gameId=${gameId}`,
+    fetcher,
+    // { refreshInterval: 3000 },
+  );
 
   useEffect(() => {
-    if (typeof isAdminData !== undefined) {
-      setIsAdmin(!!isAdminData);
+    if (gameReady) {
+      setIsGameReady(gameReady);
     }
-  }, [isAdminData]);
+  }, [gameReady]);
 
   const [isCopied, setIsCopied] = React.useState(false);
   const [buttonText, setButtonText] = React.useState('Invite');
@@ -82,16 +86,24 @@ export default function Lobby({ initialPlayers }: Props) {
     }
   };
 
-  const handleStart = async (event: any) => {
+  const handleCreate = async (event: any) => {
     event.preventDefault();
 
     if (players.length > 20) {
       return;
     }
 
-    // is this too slow?
-    const res = await fetch(`/api/generate-words?gameId=${gameId}`);
-    console.log(await res.json());
+    const describeStarted = await fetcher(
+      `/api/generate-words?gameId=${gameId}`,
+    );
+
+    setIsGameReady(describeStarted);
+  };
+
+  const handleStart = (event: any) => {
+    event.preventDefault();
+
+    router.push(`/${gameId}/describe`);
   };
 
   return (
@@ -117,7 +129,13 @@ export default function Lobby({ initialPlayers }: Props) {
         >
           {buttonText}
         </StyledButtton>
-        {isAdmin && <StyledButtton onClick={handleStart}>Start</StyledButtton>}
+        {isGameReady ? (
+          <StyledButtton onClick={handleStart}>Start Game</StyledButtton>
+        ) : (
+          isAdmin && (
+            <StyledButtton onClick={handleCreate}>Create Game</StyledButtton>
+          )
+        )}
       </div>
     </Layout>
   );

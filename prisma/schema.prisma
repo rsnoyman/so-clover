@@ -11,9 +11,11 @@ datasource db {
 }
 
 model Game {
-  id         String   @id @default(uuid())
-  cluesGiven Int      @default(0)
-  players    Player[]
+  id              String   @id @default(uuid())
+  cluesGiven      Int      @default(0)
+  describeStarted Boolean  @default(false)
+  guessStarted    Boolean  @default(false)
+  players         Player[]
 }
 
 model Player {

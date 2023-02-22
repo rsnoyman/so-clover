@@ -24,9 +24,18 @@ export default async function handler(
     }),
   );
 
-  const response = await prisma.card.createMany({
+  await prisma.card.createMany({
     data: cards,
   });
 
-  res.status(200).json(response);
+  const { describeStarted } = await prisma.game.update({
+    where: {
+      id: gameId,
+    },
+    data: {
+      describeStarted: true,
+    },
+  });
+
+  res.status(200).json(describeStarted);
 }

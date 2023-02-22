@@ -1,5 +1,6 @@
-import { prisma } from '@/prisma';
 import type { NextApiRequest, NextApiResponse } from 'next';
+
+import getIsAdmin from '@/utils/api/getIsAdmin';
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,11 +14,7 @@ export default async function handler(
     return;
   }
 
-  const player = await prisma.player.findUnique({
-    where: {
-      id: playerId,
-    },
-  });
+  const isAdmin = await getIsAdmin(playerId);
 
-  res.status(200).json(player?.admin);
+  res.status(200).json(isAdmin);
 }

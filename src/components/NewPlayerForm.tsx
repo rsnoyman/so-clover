@@ -22,7 +22,6 @@ const Form = styled.form`
   width: var(--board-size);
   inset: 0;
   margin: auto;
-  border: 3px solid;
 `;
 
 const InputWrapper = styled.div`

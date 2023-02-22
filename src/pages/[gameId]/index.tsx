@@ -6,35 +6,39 @@ import { Player } from '@prisma/client';
 import Lobby from '@/components/Lobby';
 import NewPlayerForm from '@/components/NewPlayerForm';
 
-import getPlayers from '@/utils/getPlayers';
+import getIsAdmin from '@/utils/api/getIsAdmin';
+import getPlayers from '@/utils/api/getPlayers';
 
 interface ServerSideProps {
   playerIdCookie: string | null;
   existingPlayers: Player[];
+  isAdmin: boolean;
 }
 
 export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   context,
 ) => {
   const playerIdCookie = context.req.cookies?.playerId ?? null;
+  const isAdmin = playerIdCookie ? await getIsAdmin(playerIdCookie) : false;
 
   const gameId = context.query?.gameId as string;
   const existingPlayers = await getPlayers(gameId);
 
   return {
-    props: { playerIdCookie, existingPlayers },
+    props: { playerIdCookie, existingPlayers, isAdmin },
   };
 };
 
 export default function JoinGamePage({
   playerIdCookie,
   existingPlayers,
+  isAdmin,
 }: ServerSideProps) {
   const [players, setPlayers] = React.useState(existingPlayers);
   const [playerId, setPlayerId] = React.useState(playerIdCookie);
 
   if (playerId && players?.map(({ id }) => id).includes(playerId)) {
-    return <Lobby initialPlayers={players} />;
+    return <Lobby initialPlayers={players} isAdmin={isAdmin} />;
   }
 
   return <NewPlayerForm setPlayers={setPlayers} setPlayerId={setPlayerId} />;

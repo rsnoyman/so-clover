@@ -1,7 +1,9 @@
+import { GetServerSideProps } from 'next';
 import React from 'react';
 import useSWRImmutable from 'swr/immutable';
 
 import styled from '@emotion/styled';
+import { Card } from '@prisma/client';
 
 import Board from '@/components/Board';
 import BoardProvider from '@/components/BoardProvider';
@@ -23,6 +25,21 @@ const ButtonWrapper = styled.div`
   bottom: 50px;
 `;
 
+interface ServerSideProps {
+  playerId: string | null;
+  cards: Card[];
+}
+
+export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
+  context,
+) => {
+  const playerId = context.req.cookies?.playerId ?? null;
+
+  return {
+    props: { playerId, cards: [] },
+  };
+};
+
 export default function DescribePhase() {
   const [topClue, setTopClue] = React.useState('t');
   const [rightClue, setRightClue] = React.useState('r');
@@ -30,7 +47,7 @@ export default function DescribePhase() {
   const [leftClue, setLeftClue] = React.useState('l');
 
   const { data, error, isLoading } = useSWRImmutable(
-    '/api/generate-words',
+    '/api/load-words',
     fetcher,
   );
 
