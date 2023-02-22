@@ -9,7 +9,8 @@ export default async function handler(
   const playerId = req.cookies?.playerId;
 
   if (!playerId) {
-    res.status(500).send({ error: 'user is undefined' });
+    console.error('user is undefined');
+    res.status(500).send(false);
     return;
   }
 

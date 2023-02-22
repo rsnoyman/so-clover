@@ -33,7 +33,7 @@ export default function JoinGamePage({
   const [playerId, setPlayerId] = React.useState(playerIdCookie);
 
   if (playerId && players?.map(({ id }) => id).includes(playerId)) {
-    return <Lobby />;
+    return <Lobby initialPlayers={players} />;
   }
 
   return <NewPlayerForm setPlayers={setPlayers} setPlayerId={setPlayerId} />;
