@@ -7,6 +7,8 @@ import { Player } from '@prisma/client';
 
 import { NameInput } from '@/components/Input';
 
+import fetcher from '@/utils/fetcher';
+
 import Button from '@/styles/Button';
 
 const Form = styled.form`
@@ -73,8 +75,7 @@ export default function NewPlayerForm({ setPlayers, setPlayerId }: Props) {
     const newGame = !gameId;
 
     if (newGame) {
-      const response = await fetch('/api/create-game');
-      gameId = await response.json();
+      gameId = await fetcher('/api/create-game');
     }
 
     const player = await createPlayer(gameId, name, newGame);

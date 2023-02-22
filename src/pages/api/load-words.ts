@@ -1,4 +1,3 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { prisma } from '@/prisma';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -15,10 +14,7 @@ export default async function handler(
     },
   });
 
-  const words = cards
-    .filter(({ dummy }) => !dummy)
-    .map(({ words }) => words)
-    .flat();
+  const words = cards.map(({ words }) => words).flat();
 
   res.status(200).json(words);
 }

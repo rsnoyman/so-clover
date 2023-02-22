@@ -44,8 +44,9 @@ interface Props {
 
 export default function Lobby({ initialPlayers }: Props) {
   const router = useRouter();
-  const { gameId } = router.query;
+  const gameId = router.query.gameId as string;
   const [players, setPlayers] = React.useState(initialPlayers);
+  const [isAdmin, setIsAdmin] = React.useState(initialPlayers.length === 0);
 
   const { data: playersData } = useSWR<Player[]>(
     `/api/get-players?gameId=${gameId}`,
@@ -59,7 +60,13 @@ export default function Lobby({ initialPlayers }: Props) {
     }
   }, [playersData]);
 
-  const { data: isAdmin } = useSWR<boolean>(`/api/is-admin`, fetcher);
+  const { data: isAdminData } = useSWR<boolean>(`/api/is-admin`, fetcher);
+
+  useEffect(() => {
+    if (typeof isAdminData !== undefined) {
+      setIsAdmin(!!isAdminData);
+    }
+  }, [isAdminData]);
 
   const [isCopied, setIsCopied] = React.useState(false);
   const [buttonText, setButtonText] = React.useState('Invite');
@@ -73,6 +80,18 @@ export default function Lobby({ initialPlayers }: Props) {
     } catch (err) {
       setIsCopied(false);
     }
+  };
+
+  const handleStart = async (event: any) => {
+    event.preventDefault();
+
+    if (players.length > 20) {
+      return;
+    }
+
+    // is this too slow?
+    const res = await fetch(`/api/generate-words?gameId=${gameId}`);
+    console.log(await res.json());
   };
 
   return (
@@ -98,7 +117,7 @@ export default function Lobby({ initialPlayers }: Props) {
         >
           {buttonText}
         </StyledButtton>
-        {isAdmin && <StyledButtton>Start</StyledButtton>}
+        {isAdmin && <StyledButtton onClick={handleStart}>Start</StyledButtton>}
       </div>
     </Layout>
   );

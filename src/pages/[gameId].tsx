@@ -1,4 +1,3 @@
-import { getPlayers } from '@/pages/api/get-players';
 import { GetServerSideProps } from 'next';
 import React from 'react';
 
@@ -6,6 +5,8 @@ import { Player } from '@prisma/client';
 
 import Lobby from '@/components/Lobby';
 import NewPlayerForm from '@/components/NewPlayerForm';
+
+import getPlayers from '@/utils/getPlayers';
 
 interface ServerSideProps {
   playerIdCookie: string | null;

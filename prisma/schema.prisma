@@ -27,12 +27,11 @@ model Player {
 }
 
 model Card {
-  id              String   @id @default(uuid())
-  words           String[]
-  dummy           Boolean
-  correctPosition Int
-  player          Player   @relation(references: [id], fields: [playerId])
-  playerId        String
+  id            String   @id @default(uuid())
+  words         String[]
+  boardPosition Int
+  player        Player   @relation(references: [id], fields: [playerId])
+  playerId      String
 }
 
 model Clue {

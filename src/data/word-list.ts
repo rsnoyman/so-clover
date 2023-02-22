@@ -1,4 +1,6 @@
-const wordList = [
+import shuffle from '@/utils/shuffle';
+
+const words = [
   'people',
   'history',
   'way',
@@ -485,4 +487,6 @@ const wordList = [
   'youth',
 ];
 
-export default wordList;
+shuffle(words);
+
+export default words;

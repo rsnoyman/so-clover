@@ -1,18 +1,32 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { prisma } from '@/prisma';
 import type { NextApiRequest, NextApiResponse } from 'next';
+
+import getPlayers from '@/utils/getPlayers';
+import range from '@/utils/range';
 
 import words from '@/data/word-list';
 
-type Data = Array<string>;
-
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>,
+  res: NextApiResponse,
 ) {
-  const chosenWords = new Set<string>();
-  while (chosenWords.size < 20) {
-    const r = Math.floor(Math.random() * words.length);
-    chosenWords.add(words[r]);
-  }
-  res.status(200).json(Array.from(chosenWords));
+  const gameId = req.query.gameId as string;
+  const players = await getPlayers(gameId);
+
+  const cards = players.flatMap(({ id }, i) =>
+    range(5).map((j) => {
+      const start = i * 20 + j * 4;
+      return {
+        words: words.slice(start, start + 4),
+        boardPosition: j,
+        playerId: id,
+      };
+    }),
+  );
+
+  const response = await prisma.card.createMany({
+    data: cards,
+  });
+
+  res.status(200).json(response);
 }
