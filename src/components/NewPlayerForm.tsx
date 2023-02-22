@@ -3,6 +3,7 @@ import React from 'react';
 import { useCookies } from 'react-cookie';
 
 import styled from '@emotion/styled';
+import { Player } from '@prisma/client';
 
 import { NameInput } from '@/components/Input';
 
@@ -31,7 +32,11 @@ const Label = styled.label`
   margin: 4px;
 `;
 
-const createPlayer = async (gameId: string, name: string, admin: boolean) => {
+const createPlayer = async (
+  gameId: string,
+  name: string,
+  admin: boolean,
+): Promise<Player> => {
   const response = await fetch(`/api/create-player?gameId=${gameId}`, {
     method: 'POST',
     headers: {
@@ -40,14 +45,20 @@ const createPlayer = async (gameId: string, name: string, admin: boolean) => {
     body: JSON.stringify({ name, admin }),
   });
 
-  const { id } = await response.json();
+  const player = await response.json();
 
-  return id;
+  return player;
 };
 
-export default function NewPlayerForm() {
+interface Props {
+  setPlayers?: React.Dispatch<React.SetStateAction<Player[]>>;
+  setPlayerId?: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+export default function NewPlayerForm({ setPlayers, setPlayerId }: Props) {
   const [name, setName] = React.useState('');
   const [error, setError] = React.useState(false);
+
   const [, setCookie] = useCookies(['playerId']);
 
   const router = useRouter();
@@ -58,21 +69,26 @@ export default function NewPlayerForm() {
       return;
     }
 
-    let { gameId } = router.query;
-    const admin = !gameId;
+    let gameId = router.query?.gameId as string;
+    const newGame = !gameId;
 
-    if (!gameId) {
+    if (newGame) {
       const response = await fetch('/api/create-game');
       gameId = await response.json();
     }
 
-    gameId = gameId as string;
-    const id = await createPlayer(gameId, name, admin);
-    setCookie('playerId', id, {
+    const player = await createPlayer(gameId, name, newGame);
+
+    setPlayers && setPlayers((players) => [...players, player]);
+    setPlayerId && setPlayerId(player.id);
+    setCookie('playerId', player.id, {
       path: '/',
       maxAge: 7200 /* Expires after 2hr */,
     });
-    router.push(gameId);
+
+    if (newGame) {
+      router.push(gameId);
+    }
   };
 
   return (

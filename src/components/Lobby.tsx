@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
 import React from 'react';
-import { useCookies } from 'react-cookie';
 import useSWR from 'swr';
 
 import styled from '@emotion/styled';
@@ -42,17 +41,13 @@ const PlayerWrapper = styled.div`
 export default function Lobby() {
   const router = useRouter();
   const { gameId } = router.query;
-  const [cookies] = useCookies(['playerId']);
 
   const { data: players } = useSWR<Player[]>(
     `/api/get-players?gameId=${gameId}`,
     fetcher,
+    // { refreshInterval: 3000 },
   );
-
-  const { data: isAdmin } = useSWR<Player[]>(
-    `/api/is-admin?playerId=${cookies.playerId}`,
-    fetcher,
-  );
+  const { data: isAdmin } = useSWR<boolean>(`/api/is-admin`, fetcher);
 
   const [isCopied, setIsCopied] = React.useState(false);
   const [buttonText, setButtonText] = React.useState('Invite');
@@ -73,8 +68,8 @@ export default function Lobby() {
       <PlayersWrapper>
         <h1>Players</h1>
         {players &&
-          players.map(({ id, name }) => (
-            <PlayerWrapper key={id}>{name}</PlayerWrapper>
+          players.map(({ id, gameId, name }) => (
+            <PlayerWrapper key={id + gameId}>{name}</PlayerWrapper>
           ))}
       </PlayersWrapper>
       <div>

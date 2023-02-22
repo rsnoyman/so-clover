@@ -6,11 +6,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const { playerId } = req.query;
+  const playerId = req.cookies?.playerId;
+
+  if (!playerId) {
+    res.status(500).send({ error: 'user is undefined' });
+    return;
+  }
 
   const player = await prisma.player.findUnique({
     where: {
-      id: playerId as string,
+      id: playerId,
     },
   });
 
