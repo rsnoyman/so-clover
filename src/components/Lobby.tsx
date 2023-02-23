@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React, { MouseEvent } from 'react';
 import useSWR from 'swr';
 
 import styled from '@emotion/styled';
@@ -45,6 +45,7 @@ interface Props {
 export default function Lobby({ initialPlayers, isAdmin }: Props) {
   const router = useRouter();
   const gameId = router.query.gameId as string;
+  console.log(router.query);
   const [players, setPlayers] = React.useState(initialPlayers);
   const [isGameReady, setIsGameReady] = React.useState(false);
 
@@ -54,7 +55,7 @@ export default function Lobby({ initialPlayers, isAdmin }: Props) {
     // { refreshInterval: 3000 },
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (playersData) {
       setPlayers(playersData);
     }
@@ -66,7 +67,7 @@ export default function Lobby({ initialPlayers, isAdmin }: Props) {
     // { refreshInterval: 3000 },
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (gameReady) {
       setIsGameReady(gameReady);
     }
@@ -75,7 +76,7 @@ export default function Lobby({ initialPlayers, isAdmin }: Props) {
   const [isCopied, setIsCopied] = React.useState(false);
   const [buttonText, setButtonText] = React.useState('Invite');
 
-  const copyPageUrl = async (event: any) => {
+  const copyPageUrl = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
     try {
@@ -86,7 +87,7 @@ export default function Lobby({ initialPlayers, isAdmin }: Props) {
     }
   };
 
-  const handleCreate = async (event: any) => {
+  const handleCreate = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
     if (players.length > 20) {
@@ -100,7 +101,7 @@ export default function Lobby({ initialPlayers, isAdmin }: Props) {
     setIsGameReady(describeStarted);
   };
 
-  const handleStart = (event: any) => {
+  const handleStart = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
     router.push(`/${gameId}/describe`);

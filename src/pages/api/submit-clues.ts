@@ -5,9 +5,17 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const gameId = req.query?.gameId as string;
-  const { clues, playerId } = req.body;
-  // get player id from cookie
+  const gameId = req.query.gameId as string;
+
+  const playerId = req.cookies?.playerId;
+  if (!playerId) {
+    console.error('user is undefined');
+    res.status(500).send(false);
+    return;
+  }
+
+  const { clues } = req.body;
+
   await prisma.clue.createMany({
     data: clues.map((clue: string, position: number) => ({
       clue,
@@ -27,5 +35,5 @@ export default async function handler(
     },
   });
 
-  res.status(200);
+  res.status(200).send('clues submitted');
 }

@@ -1,6 +1,7 @@
 import { GetServerSideProps } from 'next';
-import React from 'react';
-import useSWRImmutable from 'swr/immutable';
+import { useRouter } from 'next/router';
+import React, { MouseEvent } from 'react';
+import useSWR from 'swr';
 
 import styled from '@emotion/styled';
 import { Card } from '@prisma/client';
@@ -15,6 +16,8 @@ import {
   TopInput,
 } from '@/components/Input';
 
+import getCards from '@/utils/api/getCards';
+import getCluesSubmitted from '@/utils/api/getCluesSubmitted';
 import fetcher from '@/utils/fetcher';
 
 import Button from '@/styles/Button';
@@ -26,57 +29,79 @@ const ButtonWrapper = styled.div`
 `;
 
 interface ServerSideProps {
-  playerId: string | null;
   cards: Card[];
+  cluesSubmitted: boolean;
 }
 
 export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   context,
 ) => {
   const playerId = context.req.cookies?.playerId ?? null;
+  const cards = playerId ? await getCards(playerId) : [];
+  const cluesSubmitted = playerId ? await getCluesSubmitted(playerId) : false;
 
   return {
-    props: { playerId, cards: [] },
+    props: { cards, cluesSubmitted },
   };
 };
 
-export default function DescribePhase() {
+export default function DescribePhase({
+  cards,
+  cluesSubmitted,
+}: ServerSideProps) {
+  const router = useRouter();
+  const gameId = router.query.gameId as string;
+
   const [topClue, setTopClue] = React.useState('t');
   const [rightClue, setRightClue] = React.useState('r');
   const [bottomClue, setBottomClue] = React.useState('b');
   const [leftClue, setLeftClue] = React.useState('l');
 
-  const { data, error, isLoading } = useSWRImmutable(
-    '/api/load-words',
+  const [areCluesSubmitted, setAreClueSubmitted] =
+    React.useState(cluesSubmitted);
+
+  const [areAllCluesSubmitted, setAreAllClueSubmitted] = React.useState(false);
+
+  const { data: allCluesSubmitted } = useSWR<boolean>(
+    `/api/all-clues-submitted?gameId=${gameId}`,
     fetcher,
+    // { refreshInterval: 3000 },
   );
 
-  if (isLoading) {
-    return <p>Loading…</p>;
-  }
+  React.useEffect(() => {
+    if (allCluesSubmitted) {
+      setAreAllClueSubmitted(allCluesSubmitted);
+    }
+  }, [allCluesSubmitted]);
 
-  if (error) {
-    return <p>Something has gone wrong</p>;
-  }
+  const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
 
-  const handleSubmit = () => {
     const clues = [topClue, rightClue, bottomClue, leftClue];
 
     if (clues.some((clue) => !clue)) return; // focus the empty one (?)
 
-    fetch('/api/submit-clues?gameId=0', {
+    await fetch(`/api/submit-clues?gameId=${gameId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ clues, playerId: 1 }),
+      body: JSON.stringify({ clues }),
     });
+
+    setAreClueSubmitted(true);
+  };
+
+  const handleContinue = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    router.push(`/${gameId}/guess`);
   };
 
   return (
     <BoardProvider>
       <Board>
-        <Cards words={data} />
+        <Cards cards={cards} />
         <TopInput
           value={topClue}
           onChange={(event) => {
@@ -103,7 +128,10 @@ export default function DescribePhase() {
         />
       </Board>
       <ButtonWrapper>
-        <Button onClick={handleSubmit}>Submit</Button>
+        {!areCluesSubmitted && <Button onClick={handleSubmit}>Submit</Button>}
+        {areAllCluesSubmitted && (
+          <Button onClick={handleContinue}>Continue</Button>
+        )}
       </ButtonWrapper>
     </BoardProvider>
   );

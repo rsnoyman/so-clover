@@ -5,7 +5,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const gameId = req.query?.gameId as string;
+  const gameId = req.query.gameId as string;
   const { name, admin } = req.body;
 
   const player = await prisma.player.create({

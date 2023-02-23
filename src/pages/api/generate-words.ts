@@ -1,7 +1,7 @@
 import { prisma } from '@/prisma';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import getPlayers from '@/utils/getPlayers';
+import getPlayers from '@/utils/api/getPlayers';
 import range from '@/utils/range';
 
 import words from '@/data/word-list';
