@@ -6,8 +6,8 @@ import { Player } from '@prisma/client';
 import Lobby from '@/components/Lobby';
 import NewPlayerForm from '@/components/NewPlayerForm';
 
+import getAllPlayers from '@/utils/api/getAllPlayers';
 import getIsAdmin from '@/utils/api/getIsAdmin';
-import getPlayers from '@/utils/api/getPlayers';
 
 interface ServerSideProps {
   playerIdCookie: string | null;
@@ -21,8 +21,8 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   const playerIdCookie = context.req.cookies?.playerId ?? null;
   const isAdmin = playerIdCookie ? await getIsAdmin(playerIdCookie) : false;
 
-  const gameId = context.query?.gameId as string;
-  const existingPlayers = await getPlayers(gameId);
+  const gameId = context.query.gameId as string;
+  const existingPlayers = await getAllPlayers(gameId);
 
   return {
     props: { playerIdCookie, existingPlayers, isAdmin },

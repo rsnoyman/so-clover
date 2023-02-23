@@ -19,13 +19,14 @@ export const CardWrapper = styled.div`
 type DraggableCardWrapperProps = {
   isHidden: boolean;
   isHighlighted: boolean;
+
   rotationAngle: number;
 };
 
 export const DraggableCardWrapper = styled(
   CardWrapper,
 )<DraggableCardWrapperProps>`
-  border: 3px solid ${({ isHighlighted }) => (isHighlighted ? 'white' : null)};
+  border: 3px solid ${({ isHighlighted }) => (isHighlighted ? 'blue' : null)};
   opacity: ${({ isHidden }) => (isHidden ? 0 : 1)};
 
   ${({ rotationAngle }) => rotation(rotationAngle)}
@@ -39,6 +40,10 @@ export const Pistil = styled.div`
   margin: auto;
   border-radius: 12%;
   box-shadow: 0 0 0 var(--board-size) white;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   border: inherit;
 `;

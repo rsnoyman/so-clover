@@ -45,7 +45,7 @@ interface Props {
 export default function Lobby({ initialPlayers, isAdmin }: Props) {
   const router = useRouter();
   const gameId = router.query.gameId as string;
-  console.log(router.query);
+
   const [players, setPlayers] = React.useState(initialPlayers);
   const [isGameReady, setIsGameReady] = React.useState(false);
 
@@ -94,9 +94,7 @@ export default function Lobby({ initialPlayers, isAdmin }: Props) {
       return;
     }
 
-    const describeStarted = await fetcher(
-      `/api/generate-words?gameId=${gameId}`,
-    );
+    const describeStarted = await fetcher(`/api/create-words?gameId=${gameId}`);
 
     setIsGameReady(describeStarted);
   };

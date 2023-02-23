@@ -5,6 +5,9 @@ const getCards = async (playerId: string) => {
     where: {
       playerId,
     },
+    orderBy: {
+      boardPosition: 'asc',
+    },
   });
 
   return cards;

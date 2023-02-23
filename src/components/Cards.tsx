@@ -11,12 +11,9 @@ interface Props {
 const Cards = ({ cards }: Props) => {
   return (
     <>
-      {cards
-        .sort((a, b) => a.boardPosition - b.boardPosition)
-        .slice(0, 4)
-        .map(({ id, words }) => (
-          <Card key={id} words={words} />
-        ))}
+      {cards.slice(0, 4).map(({ id, words }) => (
+        <Card key={id} words={words} />
+      ))}
     </>
   );
 };

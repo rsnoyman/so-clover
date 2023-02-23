@@ -1,6 +1,7 @@
 import type { Identifier } from 'dnd-core';
 import React from 'react';
 import { useDrag, useDrop } from 'react-dnd';
+import { CheckCircle, RefreshCw } from 'react-feather';
 
 import { BoardContext } from '@/components/BoardProvider';
 
@@ -14,9 +15,9 @@ import {
 } from '@/styles/Card';
 
 interface Props {
-  id: number;
   index: number;
   words: Array<string>;
+  isCorrect: boolean;
 }
 
 interface DragItem {
@@ -28,10 +29,12 @@ const ItemTypes = {
   CARD: 'card',
 };
 
-const Card = ({ id, index, words }: Props) => {
+const Card = ({ index, words, isCorrect }: Props) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const { rotationAngle, cardData, setCardData, moveCard } =
     React.useContext(BoardContext);
+  const isSpare = index === 4;
+  const canDragAndDrop = isSpare || !isCorrect;
 
   const [{ handlerId, isHovered }, drop] = useDrop<
     DragItem,
@@ -42,8 +45,11 @@ const Card = ({ id, index, words }: Props) => {
     collect(monitor) {
       return {
         handlerId: monitor.getHandlerId(),
-        isHovered: monitor.isOver(),
+        isHovered: canDragAndDrop && monitor.isOver(),
       };
+    },
+    canDrop() {
+      return canDragAndDrop;
     },
     drop(item: DragItem) {
       if (!ref.current) {
@@ -66,6 +72,9 @@ const Card = ({ id, index, words }: Props) => {
     item: () => {
       return { index };
     },
+    canDrag() {
+      return canDragAndDrop;
+    },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
@@ -74,7 +83,7 @@ const Card = ({ id, index, words }: Props) => {
   drag(drop(ref));
 
   const handleDoubleClick = () => {
-    if (!cardData) return;
+    if (!canDragAndDrop) return;
 
     const newCardData = [...cardData];
     const card = newCardData[index];
@@ -85,8 +94,6 @@ const Card = ({ id, index, words }: Props) => {
     setCardData(newCardData);
   };
 
-  const isSpare = index === 4;
-
   return (
     <DraggableCardWrapper
       ref={ref}
@@ -96,7 +103,7 @@ const Card = ({ id, index, words }: Props) => {
       rotationAngle={isSpare ? 0 : rotationAngle}
       onDoubleClick={handleDoubleClick}
     >
-      <Pistil />
+      <Pistil>{canDragAndDrop ? <RefreshCw /> : <CheckCircle />}</Pistil>
       <TopWord>{words[0]}</TopWord>
       <RightWord>{words[1]}</RightWord>
       <BottomWord>{words[2]}</BottomWord>

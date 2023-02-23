@@ -52,10 +52,10 @@ export default function DescribePhase({
   const router = useRouter();
   const gameId = router.query.gameId as string;
 
-  const [topClue, setTopClue] = React.useState('t');
-  const [rightClue, setRightClue] = React.useState('r');
-  const [bottomClue, setBottomClue] = React.useState('b');
-  const [leftClue, setLeftClue] = React.useState('l');
+  const [topClue, setTopClue] = React.useState('Enter a clue');
+  const [rightClue, setRightClue] = React.useState('');
+  const [bottomClue, setBottomClue] = React.useState('');
+  const [leftClue, setLeftClue] = React.useState('');
 
   const [areCluesSubmitted, setAreClueSubmitted] =
     React.useState(cluesSubmitted);
@@ -81,7 +81,7 @@ export default function DescribePhase({
 
     if (clues.some((clue) => !clue)) return; // focus the empty one (?)
 
-    await fetch(`/api/submit-clues?gameId=${gameId}`, {
+    await fetch(`/api/create-clues?gameId=${gameId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -107,24 +107,28 @@ export default function DescribePhase({
           onChange={(event) => {
             setTopClue(event.target.value);
           }}
+          disabled={areCluesSubmitted}
         />
         <RightInput
           value={rightClue}
           onChange={(event) => {
             setRightClue(event.target.value);
           }}
+          disabled={areCluesSubmitted}
         />
         <BottomInput
           value={bottomClue}
           onChange={(event) => {
             setBottomClue(event.target.value);
           }}
+          disabled={areCluesSubmitted}
         />
         <LeftInput
           value={leftClue}
           onChange={(event) => {
             setLeftClue(event.target.value);
           }}
+          disabled={areCluesSubmitted}
         />
       </Board>
       <ButtonWrapper>

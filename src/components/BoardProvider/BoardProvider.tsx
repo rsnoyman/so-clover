@@ -1,26 +1,24 @@
 import React from 'react';
 
+import { CardData } from '@/utils/api/getAllCards';
+
 type BoardContextType = {
   rotationAngle: number;
   handleClockwiseBoardRotate: () => void;
   handleCounterClockwiseBoardRotate: () => void;
-  cardData: CardData[] | undefined;
-  setCardData: React.Dispatch<React.SetStateAction<CardData[] | undefined>>;
+  cardData: CardData[];
+  setCardData: React.Dispatch<React.SetStateAction<CardData[]>>;
   moveCard: (dragIndex: number, hoverIndex: number) => void;
 };
 
 export const BoardContext = React.createContext<BoardContextType>(
   {} as BoardContextType,
 );
-export interface CardData {
-  id: number;
-  words: Array<string>;
-}
 
 type Props = { children?: React.ReactNode };
 
-const rotateCardData = (cardData: CardData[] | undefined, shift: number) => {
-  if (!cardData) return;
+const rotateCardData = (cardData: CardData[], shift: number) => {
+  if (cardData.length === 0) return [];
   return cardData.map((card, cardIndex) => {
     if (cardIndex === 4) return { ...card };
 
@@ -34,7 +32,7 @@ const rotateCardData = (cardData: CardData[] | undefined, shift: number) => {
 };
 
 const BoardProvider = ({ children }: Props) => {
-  const [cardData, setCardData] = React.useState<CardData[]>();
+  const [cardData, setCardData] = React.useState<CardData[]>([]);
 
   const moveCard = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {

@@ -21,6 +21,7 @@ export default async function handler(
       clue,
       position,
       playerId,
+      gameId,
     })),
   });
 

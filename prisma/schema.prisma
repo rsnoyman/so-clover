@@ -16,6 +16,8 @@ model Game {
   describeStarted Boolean  @default(false)
   guessStarted    Boolean  @default(false)
   players         Player[]
+  cards           Card[]
+  clues           Clue[]
 }
 
 model Player {
@@ -34,6 +36,8 @@ model Card {
   boardPosition Int
   player        Player   @relation(references: [id], fields: [playerId])
   playerId      String
+  game          Game     @relation(references: [id], fields: [gameId])
+  gameId        String
 }
 
 model Clue {
@@ -42,4 +46,6 @@ model Clue {
   clue     String
   player   Player @relation(references: [id], fields: [playerId])
   playerId String
+  game     Game   @relation(references: [id], fields: [gameId])
+  gameId   String
 }

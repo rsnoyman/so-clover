@@ -1,14 +1,15 @@
 import React from 'react';
 
-import Card from '@/components/DraggableCard';
-import { CardData } from '@/components/DraggableCards';
+import DraggableCard from '@/components/DraggableCard';
+
+import { CardData } from '@/utils/api/getAllCards';
 
 interface Props {
-  cardData: CardData;
+  card: CardData;
 }
 
-const DraggableSpareCard = ({ cardData: { id, words } }: Props) => (
-  <Card id={id} index={4} words={words} />
+const DraggableSpareCard = ({ card: { words } }: Props) => (
+  <DraggableCard index={4} words={words} isCorrect />
 );
 
 export default DraggableSpareCard;

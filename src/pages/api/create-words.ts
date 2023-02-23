@@ -1,7 +1,7 @@
 import { prisma } from '@/prisma';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import getPlayers from '@/utils/api/getPlayers';
+import getAllPlayers from '@/utils/api/getAllPlayers';
 import range from '@/utils/range';
 
 import words from '@/data/word-list';
@@ -11,7 +11,7 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   const gameId = req.query.gameId as string;
-  const players = await getPlayers(gameId);
+  const players = await getAllPlayers(gameId);
 
   const cards = players.flatMap(({ id }, i) =>
     range(5).map((j) => {
@@ -20,6 +20,7 @@ export default async function handler(
         words: words.slice(start, start + 4),
         boardPosition: j,
         playerId: id,
+        gameId,
       };
     }),
   );

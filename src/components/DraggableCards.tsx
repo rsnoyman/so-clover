@@ -1,21 +1,24 @@
 import React from 'react';
 
-import Card from '@/components/DraggableCard';
+import DraggableCard from '@/components/DraggableCard';
 
-export interface CardData {
-  id: number;
-  words: Array<string>;
-}
+import { CardData } from '@/utils/api/getAllCards';
 
 interface Props {
-  cardData: Array<CardData>;
+  cards: CardData[];
+  correctCards: boolean[];
 }
 
-const Cards = ({ cardData }: Props) => {
+const Cards = ({ cards, correctCards }: Props) => {
   return (
     <>
-      {cardData.map(({ id, words }, index) => (
-        <Card key={id} id={id} index={index} words={words} />
+      {cards.map(({ id, words }, index) => (
+        <DraggableCard
+          key={id}
+          index={index}
+          words={words}
+          isCorrect={!!correctCards[index]}
+        />
       ))}
     </>
   );
