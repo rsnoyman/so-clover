@@ -31,7 +31,7 @@ const SparePile = styled.div`
 `;
 
 const StyledButton = styled(Button)`
-  width: 200px;
+  width: 250px;
 `;
 const ButtonWrapper = styled.div`
   position: fixed;
@@ -89,7 +89,7 @@ export default function GuessPhase({
   const router = useRouter();
 
   const player = allPlayers[playerNumber];
-  const gameCompleted = allPlayers.length === playerNumber;
+  const gameCompleted = allPlayers.length - 1 === playerNumber;
 
   const cards = React.useMemo(
     () => allCards.filter((card) => card.playerId === player.id),
