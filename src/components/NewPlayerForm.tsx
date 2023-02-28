@@ -67,9 +67,11 @@ export default function NewPlayerForm({ setPlayers, setPlayerId }: Props) {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setStarted(true);
 
     if (!name) {
       setError(true);
+      setStarted(false);
       return;
     }
 
@@ -88,7 +90,6 @@ export default function NewPlayerForm({ setPlayers, setPlayerId }: Props) {
       path: '/',
       maxAge: 7200 /* Expires after 2hr */,
     });
-    setStarted(true);
 
     if (newGame) {
       router.push(gameId);
