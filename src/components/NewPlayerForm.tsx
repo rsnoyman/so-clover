@@ -110,7 +110,7 @@ export default function NewPlayerForm({ setPlayers, setPlayerId }: Props) {
         {error && <div>Please enter your name</div>}
       </InputWrapper>
       <Button type="submit" disabled={started}>
-        Start
+        {started ? 'Loading' : 'Start'}
       </Button>
     </Form>
   );
