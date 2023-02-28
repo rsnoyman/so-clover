@@ -7,6 +7,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import styled from '@emotion/styled';
 import { Clue, Player } from '@prisma/client';
 
+import Avatar from '@/components/Avatar';
 import Board from '@/components/Board';
 import { BoardContext } from '@/components/BoardProvider';
 import Cards from '@/components/DraggableCards';
@@ -33,10 +34,17 @@ const SparePile = styled.div`
 const StyledButton = styled(Button)`
   width: 250px;
 `;
+
 const ButtonWrapper = styled.div`
   position: fixed;
   right: 50px;
   bottom: 50px;
+`;
+
+const AvatarWrapper = styled.div`
+  position: fixed;
+  right: 50px;
+  top: 50px;
 `;
 
 interface CluesProps {
@@ -137,6 +145,9 @@ export default function GuessPhase({
   return (
     cardData.length !== 0 && (
       <DndProvider backend={HTML5Backend}>
+        <AvatarWrapper>
+          <Avatar avatar={player.avatar}>{player.name}</Avatar>
+        </AvatarWrapper>
         <Board>
           <Cards cards={cardData.slice(0, 4)} correctCards={correctCards} />
           <Clues clues={clues} />

@@ -24,6 +24,7 @@ model Player {
   id     String  @id @default(uuid())
   name   String
   admin  Boolean @default(false)
+  avatar String
   game   Game    @relation(references: [id], fields: [gameId])
   gameId String
   cards  Card[]

@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { FormEvent } from 'react';
 import { useCookies } from 'react-cookie';
 
 import styled from '@emotion/styled';
@@ -59,12 +59,15 @@ interface Props {
 export default function NewPlayerForm({ setPlayers, setPlayerId }: Props) {
   const [name, setName] = React.useState('');
   const [error, setError] = React.useState(false);
+  const [started, setStarted] = React.useState(false);
 
   const [, setCookie] = useCookies(['playerId']);
 
   const router = useRouter();
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     if (!name) {
       setError(true);
       return;
@@ -85,6 +88,7 @@ export default function NewPlayerForm({ setPlayers, setPlayerId }: Props) {
       path: '/',
       maxAge: 7200 /* Expires after 2hr */,
     });
+    setStarted(true);
 
     if (newGame) {
       router.push(gameId);
@@ -92,12 +96,7 @@ export default function NewPlayerForm({ setPlayers, setPlayerId }: Props) {
   };
 
   return (
-    <Form
-      onSubmit={(event) => {
-        event.preventDefault();
-        handleSubmit();
-      }}
-    >
+    <Form onSubmit={handleSubmit}>
       <h1>🍀 So Clover! 🍀</h1>
       <InputWrapper>
         <Label htmlFor="name">Enter Your Name</Label>
@@ -110,7 +109,9 @@ export default function NewPlayerForm({ setPlayers, setPlayerId }: Props) {
         />
         {error && <div>Please enter your name</div>}
       </InputWrapper>
-      <Button>Start</Button>
+      <Button type="submit" disabled={started}>
+        Start
+      </Button>
     </Form>
   );
 }

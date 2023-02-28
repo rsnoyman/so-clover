@@ -9,6 +9,8 @@ import fetcher from '@/utils/fetcher';
 
 import Button from '@/styles/Button';
 
+import Avatar from './Avatar';
+
 const Layout = styled.form`
   position: absolute;
   display: flex;
@@ -28,13 +30,12 @@ const StyledButtton = styled(Button)`
 
 const PlayersWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 16px;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
   align-items: center;
-`;
-
-const PlayerWrapper = styled.div`
-  text-transform: uppercase;
 `;
 
 interface Props {
@@ -107,10 +108,12 @@ export default function Lobby({ initialPlayers, isAdmin }: Props) {
 
   return (
     <Layout>
+      <h1>Players</h1>
       <PlayersWrapper>
-        <h1>Players</h1>
-        {players.map(({ id, name }) => (
-          <PlayerWrapper key={id}>{name}</PlayerWrapper>
+        {players.map(({ id, name, avatar }) => (
+          <Avatar key={id} avatar={avatar}>
+            {name}
+          </Avatar>
         ))}
       </PlayersWrapper>
       <div>
