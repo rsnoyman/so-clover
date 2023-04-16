@@ -57,7 +57,7 @@ export default function DescribePhase({
   const [bottomClue, setBottomClue] = React.useState('');
   const [leftClue, setLeftClue] = React.useState('');
 
-  const [areCluesSubmitted, setAreClueSubmitted] =
+  const [areCluesSubmitted, setAreCluesSubmitted] =
     React.useState(cluesSubmitted);
 
   const [areAllCluesSubmitted, setAreAllClueSubmitted] = React.useState(false);
@@ -81,6 +81,8 @@ export default function DescribePhase({
 
     if (clues.some((clue) => !clue)) return; // focus the empty one (?)
 
+    setAreCluesSubmitted(true);
+
     await fetch(`/api/create-clues?gameId=${gameId}`, {
       method: 'POST',
       headers: {
@@ -88,8 +90,6 @@ export default function DescribePhase({
       },
       body: JSON.stringify({ clues }),
     });
-
-    setAreClueSubmitted(true);
   };
 
   const handleContinue = (event: MouseEvent<HTMLButtonElement>) => {
